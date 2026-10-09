@@ -52,3 +52,57 @@
 - **Strong AI (Searle, 1980)** – a suitably programmed computer *has a mind* in the same sense humans do; general intelligence. **Not yet achieved.**
 
 **Types of AI systems:** *Expert systems* (rule-based, e.g. loan advisors) · *Planning systems* (e.g. SPIKE for Hubble) · *Computer vision* (object recognition) · *Machine learning*.
+
+---
+
+## 3. Types of Ethics
+
+*Ethics* = theory of morality (principles, general norms); *morality* = the actual rules/values/norms guiding actions. Kant: ethics asks **"What should I do?"**
+
+| Branch | Question it answers | Key points |
+|---|---|---|
+| **Descriptive** | *What do people actually believe/do?* | Empirical (moral psychology, experimental economics). E.g. **ultimatum game** – people sacrifice profit for fairness. Feeds normative ethics. |
+| **Normative** | *What ought to be done?* (right/wrong, good/evil) | Claims general validity ("stealing is wrong for everybody"). 3 theories below. |
+| **Meta-ethics** | *What is morality itself?* (theory of ethics) | **Ontology** (what has moral worth), **semantics** (meaning of "right/good/ought"), **epistemology** (how we know moral truths). |
+| **Applied** | Ethics in concrete fields | Medical, bio-, business ethics. Influence runs **both ways** (practice shapes theory). |
+
+### Three normative theories
+| Theory | Judges an action by | Thinker | Running example (company CSR programme) |
+|---|---|---|---|
+| **Deontological** (duty) | The action itself – intention, duty, rules | **Kant** – *Categorical Imperative*: act only on a maxim you can will as a **universal law** | Critics care about the company's **motive** (PR vs genuine) |
+| **Consequentialist** | Foreseeable **consequences** | Bentham, Mill (utilitarianism – maximise happiness) | Motive irrelevant; only the **social impact** counts |
+| **Virtue** | The **character** of the agent | Plato (4 cardinal virtues: wisdom, justice, fortitude, temperance), **Aristotle** (11 moral virtues + intellectual) | Is the company acting *honestly/justly*? |
+
+---
+
+## 4. Relationship Between Ethics and Law
+
+- Common view: *"ethics starts where the law ends"* – the book **challenges** this.
+  1. **Laws have an ethical side** (anti-pollution, anti-trust laws are also ethical norms).
+  2. **Ethics acts as "soft law"** – firms follow ethical standards the law doesn't demand, to protect reputation/stock value (e.g. *fair-trade* coffee as a selling point), with almost the same effect as **hard law**.
+- Summary: Law = enforceable minimum; ethics = broader, can precede and shape law (e.g. hate-speech laws on social media).
+
+---
+
+## 5. Machine Ethics
+
+**Machine ethics:** *what would it take to build an AI that can make moral decisions?*
+- Machines lack **phenomenology** (feelings, consciousness) and moral intuition – they only process data *about* feelings.
+- Critics (van Wynsberghe & Robbins) say roboticists haven't given strong reasons to build "moral robots".
+
+![Fig 3.3 – Sophia: lifelike, but no feelings or consciousness](images/fig3.3_sophia.png)
+
+*Fig 3.3 – Sophia (Hanson Robotics): a lifelike face ≠ moral agency; treated by many as a publicity stunt.*
+
+### 5.1 Machine ethics examples
+Pipeline: **sensors → symbol grounding (raw data → symbols) → moral cognition (logic) → action.**
+- **Logic = truth-preserving inference** (Socrates is a man, all men are mortal ⇒ Socrates is mortal).
+- **Speeding-ticket robot:** rule *"if driver X is speeding then robot is obligated to issue a ticket to X"* + fact "X is speeding" ⇒ issue ticket. Easy – clear rule, clear symbols.
+- **Toddler vs letter robot:** a toddler falls into a stream while the robot is going to post a letter. Two duties clash (rescue vs post). Needs **causal understanding** and a **utility scale** (toddler = +1,000,000, on-time letter = +1) → rescue wins.
+- **Failure of naive utilitarian arithmetic:** a truck with **1,000,001 letters** (+1 each) outweighs the toddler (1,000,000) → robot lets the toddler drown! Shows simple utility sums give **counter-intuitive** results. *To implement deontology you need a principled way to resolve clashes of duties.*
+
+### 5.2 Moral diversity and testing
+- **Core problem:** *no agreement on the correct moral theory* (philosophers split roughly ¼ deontology, ¼ consequentialism, ⅓ virtue – Bourget & Chalmers 2014). What do we implement?
+- **Approach – testing:** build many **ethical test cases**; moral competence = ability to pass them; iterating on new cases may expand competence and even give insight into theory.
+- **Testing/certifying fairness – tools & efforts:** IEEE standards project on **algorithmic bias** (2017); **AI Fairness 360** (IBM), **audit-AI**; services like O'Neil Risk Consulting & Algorithmic Auditing; Facebook's **Fairness Flow**.
+- Also: codes of ethics for robotics engineers and HRI professionals. Some researchers remain **pessimistic** about machine morality.
