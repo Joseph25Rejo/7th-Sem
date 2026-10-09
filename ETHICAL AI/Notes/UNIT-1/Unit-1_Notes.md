@@ -106,3 +106,69 @@ Pipeline: **sensors → symbol grounding (raw data → symbols) → moral cognit
 - **Approach – testing:** build many **ethical test cases**; moral competence = ability to pass them; iterating on new cases may expand competence and even give insight into theory.
 - **Testing/certifying fairness – tools & efforts:** IEEE standards project on **algorithmic bias** (2017); **AI Fairness 360** (IBM), **audit-AI**; services like O'Neil Risk Consulting & Algorithmic Auditing; Facebook's **Fairness Flow**.
 - Also: codes of ethics for robotics engineers and HRI professionals. Some researchers remain **pessimistic** about machine morality.
+
+---
+
+## 6. Core Ethical Principles
+
+### 6.0 Trust – the foundation
+- **Trust** (Lee & See 2004) = attitude that an agent will help achieve one's goals **under uncertainty and vulnerability**.
+- Trust drives **user acceptance** – distrusted products fail. Culture matters (e.g. EU cloud customers distrusting the US Patriot Act → data centres moved to Europe after *Safe Harbor* was struck down in 2015).
+- Machine trust has **functional** elements (reliability, dependability, false-alarm rate, transparency, task complexity – performance & reliability dominate) and **ethical** elements → the 5 **AI4People** principles (Floridi et al. 2018):
+
+| Principle | Meaning | Examples / notes |
+|---|---|---|
+| **Non-maleficence** | AI shall **not harm** | Cyber-bullying, **hate speech** (German 2017 law: fines up to €50 M if illegal content isn't removed in a week – but risk of over-removal vs free speech) |
+| **Beneficence** | AI shall **do good** (benefits > harms) | Fewer AV accidents, elder care, telemedicine, smart grids, biodiversity, personalised education |
+| **Autonomy** | AI shall **respect people's goals & wishes** | Allow informed risk-taking (Everest sherpas); limits – don't help harm others (child says "pull my sister's hair"); Kant's 3 formulations: universal law, humanity as an *end* not *mere means*, kingdom of ends; Asimov's Three Laws ≠ Kantian ethical agent |
+| **Justice** | AI shall act **justly and without bias** | → *Bias & Fairness* (6.1) |
+| **Explicability** | AI's decisions must be **explainable** | → *Transparency & Explainability* (6.2) |
+
+### 6.1 Bias and Fairness (principle of Justice)
+
+![Fig 4.1 – Justitia](images/fig4.1_justitia.png)
+
+*Fig 4.1 – Justitia: **blindfold** = impartiality, **scales** = weighing evidence, **sword** = punishment.*
+
+- Defining "justice" for a machine is hard because **moral theory is contested**; but in a **narrow scope with clear rules/laws**, AI can make specific moral decisions.
+- **Credit scoring:** neighbourhood data → systematic bias against residential areas.
+- **Healthcare algorithm (Obermeyer 2019):** race excluded, yet *cost* used as proxy for *need* → poorer (disproportionately Black) patients under-served. Root cause: **problem formulation**.
+- **COMPAS (courts):** ProPublica 2016 found bias against African-American defendants in recidivism risk; Northpointe replied about different **base rates**. Chouldechova (2017): **predictive parity and equal false-positive/negative rates can't both hold** when base rates differ → **fairness definitions conflict; fairness–accuracy trade-off**. Accuracy only ≈65% (Dressel & Farid).
+- Details of bias types/mitigation → **Unit 2**.
+
+### 6.2 Transparency and Explainability (principle of Explicability)
+- **Explicability = intelligibility + accountability** (Floridi). It is **not the same as transparency**: publishing millions of lines of code won't be understood by non-experts and risks competitive secrecy.
+- **Intelligibility:** AI is not an inscrutable **black box** – someone can explain it to judges, juries, users.
+- **Legal angle:** EU **GDPR "right to information/explanation"** for algorithmic decisions. Challenge for neural networks → research in **Explainable AI (XAI)**.
+- **Justification** is part of moral functioning – can't rest on a black box. *Loomis v. Wisconsin:* defendant challenged the proprietary COMPAS score; appeal failed because judges didn't rely on the score alone.
+- **Accountability basics:** **log files** (like an aircraft flight recorder / "black box") let investigators retrace steps and assign blame.
+
+### 6.3 Privacy and Security **[+]**
+- **Privacy:** control over personal data – AI is data-hungry (Ch. 8 of the book: persistent surveillance, use of data for unintended purposes, auto-insurance discrimination, China's Social Credit System). Principles: **consent, purpose limitation, data minimisation**, anonymisation, GDPR-style rights.
+- **Security:** protect data and models from breach, **adversarial attacks**, **data poisoning**, model theft; security failures destroy trust and cause harm (links to non-maleficence).
+
+### 6.4 Robustness and Reliability **[+]**
+- **Robustness:** performs correctly under **changed/noisy/adversarial inputs** – the book notes AI **generalises poorly** and lacks common sense (face recogniser fails on profile view).
+- **Reliability:** consistent, dependable performance over time; the book says **reliability and performance are the dominant factors in trust**; failures in safety-critical use (autonomous cars, medicine) risk life and injury.
+- Practices: stress/edge-case testing, monitoring for drift, fail-safe fallbacks, **human oversight**.
+
+---
+
+## 7. Quick Revision
+
+**One-liners**
+- AI = agents that perceive, learn and act to achieve goals; all today's AI is **weak**.
+- Ethics: **descriptive** (is) · **normative** (ought) · **meta** (nature of morality) · **applied** (fields).
+- Normative: **deontology** (duty/Kant) · **consequentialism** (outcomes/utility) · **virtue** (character/Aristotle).
+- Law ≠ ethics but overlap; ethics = **soft law**.
+- Machine ethics challenges: no feelings, **no agreed theory**, naive utilities misfire → use **test cases**.
+- Five principles: **Non-maleficence, Beneficence, Autonomy, Justice, Explicability**.
+
+**Likely questions**
+1. Differentiate strong and weak AI with examples. (2 marks)
+2. Explain descriptive, normative and meta-ethics. (6)
+3. Compare deontological, consequentialist and virtue ethics using one example. (8)
+4. Discuss the relationship between ethics and law. (5)
+5. With the toddler–letter example, explain the difficulties in machine ethics. (6)
+6. Explain how moral diversity affects testing of ethical AI; name tools for bias testing. (5)
+7. Explain the five AI4People principles; relate justice and explicability to COMPAS. (10)
