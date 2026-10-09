@@ -110,3 +110,65 @@ Applied at three points of the ML pipeline:
 | **Post-processing** (fix the output) | **Group-specific thresholds**; equalised-odds post-processing; **reject-option classification** (re-label near-boundary cases) | Works on black-box models, but can be legally sensitive |
 
 **Non-technical measures:** diverse development teams, **fairness requirements** defined with stakeholders, documentation (**datasheets for datasets, model cards**), **human-in-the-loop** review, appeal/redress mechanisms, regular **audits**, legal compliance (GDPR, anti-discrimination law), and honest handling of the **fairness ↔ accuracy trade-off**.
+
+---
+
+## 7. Implementing Bias Detection and Fairness
+
+Full runnable code: [`bias_detection_demo.py`](bias_detection_demo.py) (numpy + pandas + scikit-learn only; synthetic loan data where **group B was historically penalised** and `zip_score` is a **proxy** for group).
+
+**Workflow:** ① train baseline (protected attribute *not* used) → ② compute metrics per group → ③ mitigate → ④ re-measure.
+
+```python
+# Metrics per group (core of the detection step)
+sel_rate = y_pred[g == "B"].mean() / y_pred[g == "A"].mean()   # disparate impact
+tpr = y_pred[(g == grp) & (y_true == 1)].mean()                # equal opportunity
+
+# Pre-processing: reweighing  w(g, y) = P(g) * P(y) / P(g, y)
+model.fit(X_tr, y_tr, sample_weight=w)
+
+# Post-processing: group-specific threshold so selection rates match
+thr_B = np.quantile(p_B, 1 - selection_rate_A)
+```
+
+**Results of the demo (test set):**
+
+| Model | Selection rate A / B | Disparate impact (B/A) | TPR gap (B−A) |
+|---|---|---|---|
+| Baseline | 0.364 / 0.159 | **0.44** ✗ | −0.45 |
+| + Reweighing (pre) | 0.331 / 0.197 | 0.59 ✗ | −0.30 |
+| + Threshold adjustment (post) | 0.364 / 0.364 | **1.00** ✓ | +0.03 |
+
+*Takeaways:* dropping the protected column doesn't remove bias (proxy!); reweighing helps partly; post-processing equalises outcomes but at a cost (FPR for B rose 0.000 → 0.044). Always report **several metrics + accuracy**.
+
+**Library route [+]** (production): 
+```python
+# IBM AI Fairness 360
+from aif360.datasets import BinaryLabelDataset
+from aif360.metrics import BinaryLabelDatasetMetric
+from aif360.algorithms.preprocessing import Reweighing
+# Fairlearn
+from fairlearn.metrics import MetricFrame, demographic_parity_difference, equalized_odds_difference
+from fairlearn.reductions import ExponentiatedGradient, DemographicParity
+```
+Run: `pip install fairlearn aif360 scikit-learn`.
+
+---
+
+## 8. Quick Revision
+
+- **Bias** = systematic unfairness; enters via **data (historical, sampling, labels, proxies)** and **model/objective**. Removing the protected attribute ≠ fair.
+- **Impact:** unequal decisions in credit, hiring, healthcare, justice at scale → loss of trust, legal & reputational risk.
+- **Cases to remember:** COMPAS (conflicting fairness definitions, 65% accuracy, *Loomis*), healthcare cost proxy (Obermeyer), credit/neighbourhood, Amazon hiring, Gender Shades.
+- **Detect:** data audit · parity / disparate impact (80% rule) / equal opportunity / equalised odds / predictive parity · subgroup error analysis · AIF360, Fairlearn, audits.
+- **Mitigate:** **pre** (re-sample, reweigh) · **in** (constraints, adversarial debiasing) · **post** (thresholds, reject option) + diverse teams, documentation, human oversight, audits.
+- Fairness metrics **conflict** → context decides; **fairness–accuracy trade-off** is a stakeholder decision.
+
+**Likely questions**
+1. Define bias; how can bias arise in data and in models? (5)
+2. Explain how bias affects decision-making with two real-world cases. (8)
+3. List and explain types of bias with examples. (8)
+4. Describe the COMPAS controversy; why can't predictive parity and equal error rates coexist? (8)
+5. Compare pre-, in- and post-processing mitigation techniques. (10)
+6. Define statistical parity, disparate impact and equal opportunity; compute them for a given confusion matrix. (6)
+7. Write/describe a procedure to detect and mitigate bias in a classifier. (10)
