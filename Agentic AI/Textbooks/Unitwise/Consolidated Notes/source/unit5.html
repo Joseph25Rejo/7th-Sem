@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Agentic AI - Unit 5 Consolidated Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Agentic AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 5 &mdash; Applications of Agentic Systems &amp; the Model Context Protocol (MCP)</h1>
+  <div class="sub">Creative &bull; Conversational/NLP &bull; Robotics &bull; Decision support &bull; MCP architecture, lifecycle, landscape &amp; adoption</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Common use cases &amp; applications (overview)</li>
+<li>Creative &amp; artistic applications (film pre-visualisation)</li>
+<li>NLP &amp; conversational agents (enterprise knowledge management)</li>
+<li>Robotics &amp; autonomous systems (manufacturing cell)</li>
+<li>Decision support &amp; optimisation (supply chain)</li>
+<li>Chapter 10 summary &amp; Q&amp;A</li>
+<li>MCP &mdash; overview, abstract &amp; contributions</li>
+<li>Background: AI tooling before MCP</li>
+<li>MCP architecture: host, client, server</li>
+<li>Transport layer &amp; communication</li>
+<li>MCP server lifecycle (4 phases, 16 activities)</li>
+<li>Current landscape: adopters, community servers, SDKs</li>
+<li>Use cases: OpenAI, Cursor, Cloudflare</li>
+<li>Security &amp; privacy (preview) &amp; summary</li>
+</ol></div>
+
+<h2>Part A &mdash; Common Use Cases and Applications</h2>
+<p>Agentic systems combine <b>LLMs with goal-directed behaviour and autonomous decision-making</b>: they understand context, formulate plans and act toward objectives while keeping meaningful interaction with humans. LLMs are used not just as language processors but as <b>core reasoning engines</b> for planning and execution. Four domains: <b>creative &amp; artistic, NLP &amp; conversational agents, robotics &amp; autonomous systems, decision support &amp; optimisation</b>.</p>
+<table>
+<tr><th>Domain</th><th>Case study</th><th>Agents</th></tr>
+<tr><td>Creative &amp; artistic</td><td>Film pre-visualisation</td><td>Director, Technical supervisor, Visualisation</td></tr>
+<tr><td>NLP &amp; conversational</td><td>Enterprise knowledge management</td><td>Query understanding, Knowledge navigation, Response synthesis</td></tr>
+<tr><td>Robotics &amp; autonomous</td><td>Flexible manufacturing cell</td><td>Planning &amp; coordination, Robot control, Quality &amp; optimisation, Exception handling</td></tr>
+<tr><td>Decision support &amp; optimisation</td><td>Global supply chain</td><td>Strategic planning, Operational optimisation, Risk management, Sustainability optimisation</td></tr>
+</table>
+
+<h2>1. Creative and Artistic Applications</h2>
+<p><b>Evolution:</b> early generative tools produced static outputs from predefined prompts with limited interaction; modern agentic systems actively participate in dynamic, iterative creative processes using <b>context retention, adaptive learning and multi-modal integration</b> &mdash; true collaborators that understand artistic intent, refine outputs on feedback and align with the human vision (static generation &rarr; interactive, context-aware, adaptive systems).</p>
+<ul>
+<li><b>Artistic collaboration</b> &mdash; maintain consistent style, artistic intent, thematic coherence across iterations.</li>
+<li><b>Music composition</b> &mdash; apply music theory, adapt to genres, collaborate in real time with performers/composers.</li>
+<li><b>Writing &amp; narrative development</b> &mdash; co-create with authors, maintain character consistency, plot coherence, narrative flow, preserve the author's voice.</li>
+</ul>
+<h4>Real-world applications</h4>
+<ul>
+<li><b>Adobe Firefly agent system</b> &mdash; specialised agents: one maintains brand identity/style guidelines, another ensures consistent asset representation across media, a third handles technical specifications and formats.</li>
+<li><b>Universal Music Group AI music production</b> &mdash; <b>melody agents</b> (themes/motifs), <b>harmony agents</b> (tonal consistency), <b>orchestration agents</b> (instrumental arrangement) preserving composer's intent.</li>
+</ul>
+<h3>Use case &mdash; Film pre-visualisation</h3>
+<div class="warn"><span class="t">Problem</span>Directors and storyboard artists spend a lot of time iterating pre-visualisation sequences, needing constant communication across departments to align creative vision with technical feasibility; traditional tools can't understand creative intent while considering technical constraints. <b>Goal:</b> a multi-agent system translating the director's vision into technically feasible pre-vis sequences while keeping artistic coherence and production constraints.</div>
+<table>
+<tr><th>Agent</th><th>Responsibilities</th></tr>
+<tr><td><b>Director agent</b></td><td>Processes natural-language scene descriptions; maintains overall creative vision &amp; style consistency; communicates artistic intent to other agents.</td></tr>
+<tr><td><b>Technical supervisor agent</b></td><td>Evaluates technical feasibility; considers budget &amp; resource constraints; proposes alternatives when needed.</td></tr>
+<tr><td><b>Visualisation agent</b></td><td>Generates initial storyboards &amp; 3D previews; adapts output from other agents' feedback; maintains visual consistency across scenes.</td></tr>
+</table>
+<p><b>Collaboration:</b> shared context understanding via LLM capabilities; continuous feedback loops between creative and technical requirements; real-time adaptation to changes.</p>
+<p><b>Environment &amp; external systems:</b> asset management database (3D models, textures, previous storyboards); production management system (budgets, schedules, resources); rendering-farm API (compute for 3D visualisation); camera &amp; equipment database; reference library (past productions, style guides, mood boards); version control system; collaboration platform (real-time team feedback).</p>
+<div class="key"><span class="t">Why this is better</span>Current tools operate in isolation needing human intermediaries. Agentic approach gives: continuous alignment of creative vision and technical feasibility; reduced iteration cycles through real-time collaboration; creative consistency while adapting to constraints; efficient resource use via automated technical validation. Agents become <b>creative partners, not mere tools</b>.</div>
+
+<h2>2. Natural Language Processing &amp; Conversational Agents</h2>
+<p>Agentic systems add to language models: <b>maintaining context over long interactions, executing complex tasks through dialogue, adapting to user needs/feedback</b>. Examples: Anthropic's Claude and OpenAI's ChatGPT hold detailed technical discussions across turns, adapting to the user's expertise.</p>
+<table>
+<tr><th>Capability (vs traditional chatbots)</th><th>Meaning</th></tr>
+<tr><td><b>Context retention</b></td><td>Coherent discussions across topics/sessions; personalised, relevant responses over time.</td></tr>
+<tr><td><b>Task execution</b></td><td>Translate NL instructions into actionable steps &mdash; scheduling, data retrieval, system configuration (bridges communication and execution).</td></tr>
+<tr><td><b>Adaptive interaction</b></td><td>Adjust style, tone, complexity to user preference/expertise/situation.</td></tr>
+<tr><td><b>Multi-modal understanding</b></td><td>Process text, images, code, structured data together.</td></tr>
+</table>
+<p><b>Real-world:</b> <b>Salesforce Agentforce</b> (formerly Einstein virtual assistant) helps customer-service reps by maintaining context across customer interactions while accessing database information in real time; <b>GitHub Copilot Chat</b> maintains technical discussions about code while executing development tasks.</p>
+<h3>Use case &mdash; Enterprise knowledge management</h3>
+<div class="warn"><span class="t">Problem</span>Knowledge fragmentation across departments; traditional search/documentation fail to capture context and connections. <b>Goal:</b> multi-agent system to understand, organise and retrieve corporate knowledge, keep context and handle complex queries spanning multiple domains and documents.</div>
+<table>
+<tr><th>Agent</th><th>Responsibilities</th></tr>
+<tr><td><b>Query understanding agent</b></td><td>Processes NL questions; identifies implicit context &amp; requirements; breaks complex queries into subtasks.</td></tr>
+<tr><td><b>Knowledge navigation agent</b></td><td>Maps relationships between knowledge sources; maintains context across documents; tracks <b>information provenance</b>.</td></tr>
+<tr><td><b>Response synthesis agent</b></td><td>Combines information from multiple sources; adapts detail level to user role; maintains consistency across interactions.</td></tr>
+</table>
+<p><b>Collaboration:</b> shared understanding of organisational context; continuous learning from user interactions; dynamic adaptation to user roles/needs.</p>
+<h4>Environment &amp; external systems</h4>
+<ul>
+<li><b>Internal systems:</b> document management (SharePoint, Confluence, wikis); communication platforms (Slack, MS Teams); project management (Jira, Asana); email servers (archived threads/attachments); code repositories (GitHub, GitLab docs/discussions); HR systems (training, policy); CRM (customer histories, support tickets).</li>
+<li><b>External APIs/services:</b> industry news (Bloomberg, Reuters); research databases (papers, patents); regulatory databases (compliance, legal); cloud storage (Google Drive, OneDrive); translation services; web monitoring (social media, competitor websites).</li>
+<li><b>Access control layer:</b> role-based access management; security classification database; user authentication; audit logging; compliance monitoring.</li>
+</ul>
+<div class="key"><span class="t">Why this is better</span>Traditional systems use exact keyword matches &amp; predefined categories. Agentic approach: natural-language understanding of complex queries; context-aware retrieval; dynamic connection of related information; role/expertise-personalised responses.</div>
+
+<h2>3. Robotics and Autonomous Systems</h2>
+<p>Traditional robots rely on pre-programmed behaviours and rigid control; LLM-based agents let robots <b>understand natural-language instructions, reason about the environment and adapt dynamically</b> &mdash; bridging human intent and physical action.</p>
+<p><b>Key capabilities of modern robotic agents:</b> natural-language understanding for physical tasks; contextual reasoning about environmental constraints; real-time adaptation; learning from demonstration and feedback; multi-modal integration of vision, language and control.</p>
+<p><b>Real-world:</b> <b>Boston Dynamics (Atlas)</b> &mdash; language instruction translated to complex physical movement; <b>UC Berkeley</b> robotic systems &mdash; generative models adapt in real time to cluttered environments; <b>MIT RoboBrain</b> &mdash; creative solving of manipulation tasks using vast knowledge bases.</p>
+<h3>Use case &mdash; Flexible manufacturing cell</h3>
+<div class="warn"><span class="t">Problem</span>Traditional cells struggle with product variation and unexpected disruptions (equipment failure, supply-chain disruption); need extensive reprogramming and constant human intervention. <b>Goal:</b> multi-agent system orchestrating a flexible cell that adapts to variations, handles disruptions, optimises processes while keeping quality and safety.</div>
+<table>
+<tr><th>Agent</th><th>Responsibilities</th></tr>
+<tr><td><b>Planning &amp; coordination agent</b></td><td>Understands NL production requirements; develops/adapts manufacturing sequences; coordinates robotic systems; maintains production goals.</td></tr>
+<tr><td><b>Robot control agent</b></td><td>Translates high-level instructions into <b>motion primitives</b>; manages real-time sensor feedback; adapts movements; ensures safe human-robot interaction.</td></tr>
+<tr><td><b>Quality &amp; optimisation agent</b></td><td>Monitors quality in real time; suggests process improvements; <b>predicts maintenance needs</b>; optimises resource utilisation.</td></tr>
+<tr><td><b>Exception handling agent</b></td><td>Detects anomalies/disruptions; generates recovery strategies; manages unexpected human interventions; maintains safety protocols during exceptions.</td></tr>
+</table>
+<p><b>Collaboration:</b> shared manufacturing context; real-time sensor data integration; continuous feedback loops for optimisation; dynamic task reallocation during disruptions.</p>
+<p><i>Motion primitives</i> = fundamental movement patterns (grasping, turning) used as building blocks for complex actions.</p>
+<h4>Environment &amp; external systems</h4>
+<ul>
+<li><b>Manufacturing infrastructure:</b> robotic arms &amp; end effectors; vision systems (cameras, 3D sensors); <b>PLC</b> systems; material handling (conveyors, <b>AGVs</b>, storage).</li>
+<li><b>Information systems:</b> <b>MES</b> (scheduling &amp; tracking), <b>ERP</b> (resources/inventory), <b>QMS</b> (quality data/specs), <b>digital twin</b> platform (simulation &amp; prediction), maintenance management (equipment health).</li>
+<li><b>External interfaces:</b> supply-chain management (material availability, logistics); customer order system; compliance database (safety standards, regulations); knowledge base (historical data, best practices).</li>
+</ul>
+<div class="key"><span class="t">Why this is better</span>NL interaction for production changes; real-time adaptation without reprogramming; autonomous handling of disruptions; continuous optimisation; human expertise integrated when needed; proactive quality control &amp; maintenance prediction &mdash; from automation tools to <b>intelligent collaborators</b>.</div>
+
+<h2>4. Decision Support and Optimisation</h2>
+<p>Traditional decision support uses fixed rules and static analysis; LLM agents <b>understand context, reason about trade-offs and give adaptive recommendations</b> aligned with business goals.</p>
+<p><b>Capabilities:</b> multi-modal data analysis &amp; synthesis; context-aware recommendation generation; real-time adaptation; explanation of reasoning &amp; trade-offs; integration of domain expertise with data-driven insights.</p>
+<table>
+<tr><th>Sector</th><th>Real-world systems</th></tr>
+<tr><td><b>Financial</b></td><td><b>JPMorgan Chase LOXM</b> &mdash; analyses market data, news, social media for investment opportunities; <b>Two Sigma Venn</b> &mdash; market analysis + reinforcement learning for strategies.</td></tr>
+<tr><td><b>Healthcare</b></td><td><b>University of Michigan HealthPal</b> &mdash; personalised treatment recommendations from medical records &amp; genetic data; <b>Stanford DeepPill</b> &mdash; optimises drug therapies from patient profiles/history.</td></tr>
+<tr><td><b>Industrial</b></td><td><b>Siemens MindSphere</b> &mdash; real-time process optimisation; <b>ExxonMobil Energy Outlook</b> &mdash; predictive modelling for long-term resource planning.</td></tr>
+</table>
+<h3>Use case &mdash; Global supply-chain optimisation</h3>
+<div class="warn"><span class="t">Problem</span>Global supply chains: multiple stakeholders, variable lead times, frequent disruptions; traditional tools can't balance <b>cost, speed, sustainability</b> dynamically; human planners overwhelmed by data volume and decision speed. <b>Goal:</b> multi-agent system for end-to-end optimisation with real-time decisions, multiple objectives and disruption adaptation.</div>
+<table>
+<tr><th>Agent</th><th>Responsibilities</th></tr>
+<tr><td><b>Strategic planning agent</b></td><td>Analyses market trends/demand; long-term sourcing strategies; balances cost, risk, sustainability; aligns with business objectives.</td></tr>
+<tr><td><b>Operational optimisation agent</b></td><td>Day-to-day logistics; routing &amp; resource allocation; real-time scheduling adjustments; coordinates carriers &amp; warehouses.</td></tr>
+<tr><td><b>Risk management agent</b></td><td>Monitors global events/disruptions; assesses impact; generates contingency plans; early warning signals.</td></tr>
+<tr><td><b>Sustainability optimisation agent</b></td><td>Tracks environmental impact metrics; optimises carbon-footprint reduction; alternative routing/sourcing; ensures environmental-regulation compliance.</td></tr>
+</table>
+<p><b>Collaboration:</b> shared supply-chain context; real-time data integration &amp; analysis; continuous scenario planning &amp; risk assessment; dynamic re-optimisation.</p>
+<h4>Environment &amp; external systems</h4>
+<ul>
+<li><b>Core infrastructure:</b> <b>ERP</b> (SAP, Oracle: business data, inventory, production planning); <b>TMS</b> (real-time fleet tracking, carrier management, route optimisation); <b>WMS</b> (inventory tracking/optimisation, labour mgmt, order fulfilment).</li>
+<li><b>External data:</b> market intelligence (Bloomberg/Reuters, industry feeds, social media monitoring); weather &amp; environmental systems (forecasting, disaster tracking, impact monitoring); supplier networks (performance DBs, capacity tracking, risk platforms).</li>
+<li><b>Integration layer:</b> API management; real-time data streaming; event processing engine; document management; <b>blockchain</b> for traceability.</li>
+</ul>
+<div class="key"><span class="t">Why this is better</span>NL interaction for strategy; real-time adaptation to many variables; proactive risk identification &amp; mitigation; balanced optimisation across competing objectives; human expertise at strategic points; continuous learning from historical decisions &mdash; from decision-support tools to <b>trusted strategic advisors</b>.</div>
+
+<h3>Chapter 10 summary &amp; Q&amp;A</h3>
+<p>Agentic systems are <b>valuable partners, not just tools</b>; the future of AI is augmenting, not replacing, human capability. Other fields not covered: education, scientific research, healthcare, environmental protection. (Final chapter: review of concepts, emerging tools, AGI/ASI challenges.)</p>
+<div class="exam">
+<b>Q1. Creative agentic systems vs traditional generative tools?</b> They maintain context and creative vision across iterations &mdash; in film pre-vis the director agent keeps the vision while technical supervisor &amp; visualisation agents ensure feasibility.<br>
+<b>Q2. Manufacturing cell &mdash; why better?</b> Four agents (planning &amp; coordination, robot control, quality &amp; optimisation, exception handling) share context and feedback loops &rarr; real-time adaptation to variations/disruptions with quality; traditional automation needs human intervention for changes.<br>
+<b>Q3. Robotics vs decision support?</b> Robotics agents translate language into physical action under safety constraints (bridge physical-digital divide); decision-support agents process multiple information streams and balance competing objectives.<br>
+<b>Q4. Knowledge management collaboration?</b> Query-understanding &rarr; knowledge navigation &rarr; response synthesis, sharing organisational context and learning from interactions.<br>
+<b>Q5. Supply-chain advantages?</b> Natural-language strategy, real-time adaptation, proactive risk identification, balanced optimisation; the four agents cover long-term strategy, day-to-day operations, risk and sustainability.</div>
+
+<div style="page-break-before: always"></div>
+<div class="cover" style="margin-top:0">
+  <div class="tag">Part B &middot; Research paper</div>
+  <h1 style="font-size:20pt">Model Context Protocol (MCP): Landscape, Security Threats, and Future Research Directions</h1>
+  <div class="sub">Xinyi Hou, Yanjie Zhao, Shenao Wang, Haoyu Wang &mdash; Huazhong University of Science and Technology &middot; arXiv:2503.23278v3 (Oct 2025)</div>
+</div>
+
+<h2>5. MCP &mdash; Overview, Abstract and Contributions</h2>
+<div class="def"><span class="t">What is MCP?</span>An emerging <b>open standard</b> defining a <b>unified, bi-directional communication and dynamic-discovery protocol between AI models and external tools/resources</b>, to enhance <b>interoperability</b> and reduce fragmentation.</div>
+<ul>
+<li>Studied from <b>architectural and security</b> perspectives. Defines the full <b>MCP server lifecycle</b>: <b>4 phases</b> (creation, deployment, operation, maintenance) decomposed into <b>16 key activities</b>.</li>
+<li>Builds a <b>threat taxonomy</b> for 4 attacker types &mdash; <b>malicious developers, external attackers, malicious users, security flaws</b> &mdash; covering <b>16 threat scenarios</b> (e.g., <b>tool poisoning, installer spoofing, unauthorised access</b>), validated by real-world case studies; proposes fine-grained safeguards per lifecycle phase.</li>
+<li>Analyses the <b>landscape</b> (industry adoption, integration patterns, supporting tools), its strengths and limitations, and <b>future research directions</b> (standardisation, trust boundaries, sustainable growth). Data: github.com/security-pride/MCP_Landscape.</li>
+</ul>
+<h3>Introduction &mdash; history</h3>
+<ul>
+<li>2023: <b>OpenAI function calling</b> let LLMs call external APIs in a structured way &rarr; ecosystem: <b>ChatGPT plugins</b>, LLM app stores (<b>Coze</b>, <b>Yuanqi</b>), frameworks (<b>LangChain</b>, <b>LlamaIndex</b>), similar mechanisms from Anthropic, Google, Meta.</li>
+<li><b>Problem:</b> integration is fragmented &mdash; developers manually define interfaces, handle authentication and execution per service; function calling varies per platform (redundant implementations); frameworks use predefined/hardcoded integrations limiting interoperability and maintainability.</li>
+<li><b>Late 2024: Anthropic launched MCP</b> &mdash; universal protocol standardising <b>definition, discovery and invocation</b> of external tools; inspired by the <b>Language Server Protocol (LSP)</b>.</li>
+</ul>
+<table>
+<tr><th>MCP innovations beyond function calling</th></tr>
+<tr><td><b>1. Protocol-based standard</b> decoupling tool implementation from usage &mdash; publish/describe functions dynamically, independent of any model or agent framework.</td></tr>
+<tr><td><b>2. Dynamic discovery &amp; schema negotiation</b> &mdash; clients list tools at runtime, retrieve capabilities and invoke uniformly, no hardcoding/platform-specific adapters.</td></tr>
+<tr><td><b>3. Bi-directional communication</b> &mdash; model-to-tool requests <i>and</i> tool-initiated events/notifications back to the host.</td></tr>
+<tr><td><b>4. Access control &amp; capability negotiation as first-class features</b> &mdash; foundation for auditable, secure AI-to-tool interactions.</td></tr>
+</table>
+<p>MCP shifts the paradigm from per-application hardcoded bindings to an <b>interoperable ecosystem of composable, discoverable network services</b>. Thousands of MCP servers expose GitHub, Slack, Blender etc.; clients like <b>Cursor</b> and <b>Claude Desktop</b> add servers on demand. The ecosystem is early: security, tool discoverability and remote deployment lack comprehensive solutions; academically little explored.</p>
+<h4>Paper contributions</h4>
+<ol>
+<li>First analysis of the MCP ecosystem &mdash; architecture, components, workflow.</li>
+<li>Key components of MCP servers and their lifecycle (creation, deployment, operation, maintenance; 16 activities).</li>
+<li>Systematic threat taxonomy &mdash; 4 attacker archetypes, 16 scenarios.</li>
+<li>Landscape &mdash; adoption, diversity, use cases across industries/platforms.</li>
+<li>Implications, challenges and future directions on security, scalability, governance.</li>
+</ol>
+<p><i>Paper structure:</i> &sect;2 tool invocation with vs without MCP; &sect;3 architecture (host, client, server, lifecycle); &sect;4 landscape; &sect;5 security &amp; privacy + mitigation; &sect;6 implications/future work; &sect;7 related work; &sect;8 conclusion.</p>
+
+<h2>6. Background and Motivation &mdash; AI Tooling Before MCP</h2>
+<figure><img src="../assets/u5_fig-mcp1.png"><figcaption>Fig. 1 &mdash; Tool invocation with and without MCP. Without MCP each tool needs a specific API; with MCP the AI application is an MCP client talking to an MCP server through one unified protocol.</figcaption></figure>
+<table>
+<tr><th>Earlier approach</th><th>Limitation</th><th>How MCP helps</th></tr>
+<tr><td><b>Manual API wiring</b></td><td>Custom authentication, data transformation and error handling for every integration; tightly-coupled fragile systems; maintenance burden grows with each API.</td><td>Unified interface; models connect to multiple tools dynamically without custom wiring.</td></tr>
+<tr><td><b>Standardised plugin interfaces</b> (OpenAI ChatGPT Plugins, Nov 2023, OpenAPI schemas; e.g., Zapier plugins; LLM app stores Coze, Yuanqi)</td><td>Mostly <b>one-directional</b>; couldn't maintain state or coordinate multi-step tasks; <b>platform-specific</b> ecosystems &rarr; poor cross-platform compatibility, duplicate maintenance.</td><td><b>Open-source, platform-agnostic</b>, bi-directional (tool-initiated events/notifications).</td></tr>
+<tr><td><b>AI agent tool integration</b> (LangChain etc.)</td><td>Integration/maintenance still manual; custom implementations; complexity grows with tool count.</td><td>Protocol-level abstraction unifying how tools are described and discovered across platforms; tools by different developers interoperate.</td></tr>
+<tr><td><b>RAG &amp; vector databases</b></td><td>Passive retrieval only (fixes knowledge cutoff, improves accuracy) &mdash; can't perform active operations such as updating customer records or escalating to human support.</td><td>Standard protocol for <b>both retrieval and action</b>: knowledge access with secure tool execution.</td></tr>
+</table>
+<p><b>Motivation:</b> MCP standardises how models interact with external tools, fetch data and execute operations &mdash; interoperable, secure, maintainable workflows across heterogeneous environments; access control, capability negotiation and schema discovery are <b>protocol primitives</b>. The paper is the first to analyse the landscape, ecosystem and risks.</p>
+
+<h2>7. MCP Architecture</h2>
+<p>Three core components: <b>MCP host, MCP client, MCP server</b>. Typical workflow (Fig. 2): the user sends a prompt &rarr; client analyses intent &rarr; selects appropriate tools via the MCP server &rarr; invokes external APIs to retrieve/process data &rarr; notifies the user.</p>
+<figure><img src="../assets/u5_fig-mcp2.png"><figcaption>Fig. 2 &mdash; MCP workflow. Example prompt: "Can you please fetch the latest stock price of AAPL and notify me via email?" &mdash; intent analysis, tool selection, API invocation; server offers tools, resources, prompts; "1:1" = one-to-one client&ndash;server link.</figcaption></figure>
+<table>
+<tr><th>Component</th><th>Description</th></tr>
+<tr><td><b>MCP host</b></td><td>The AI application providing the environment for AI tasks and <b>running the MCP client</b>; integrates interactive tools/data. Examples: <b>Claude Desktop</b> (AI-assisted content creation), <b>Cursor</b> (AI IDE), <b>AI agents</b> (autonomous systems).</td></tr>
+<tr><td><b>MCP client</b></td><td>Intermediary inside the host maintaining a <b>one-to-one link with its MCP server</b>; initiates requests, <b>queries available functions</b>, retrieves responses describing tools/resources/capabilities; processes <b>notifications</b> (task progress, status); performs <b>sampling</b> (gathers tool-usage/performance data for optimisation); communicates through the <b>transport layer</b>.</td></tr>
+<tr><td><b>MCP server</b></td><td>Lets host/client access external systems and execute operations; offers <b>tools, resources, prompts</b>.</td></tr>
+</table>
+<h3>7.1 Three MCP server capabilities</h3>
+<ul>
+<li><b>Tools &mdash; enabling external operations.</b> Server invokes external services/APIs on behalf of the model. Host queries the server (via client) for the tool list &amp; capabilities &rarr; selects a tool by task context &rarr; sends invocation via client &rarr; server executes the API call &rarr; result returns to client &rarr; host. Unlike traditional function calling (confined to one model/framework), tools are <b>described &amp; accessed via a standard, model-agnostic protocol</b> &mdash; dynamically discoverable across heterogeneous systems; support <b>bi-directional communication</b> (async updates, event streaming); <b>supply-and-consume model</b> promoting modularity and reuse.</li>
+<li><b>Resources &mdash; exposing data to AI models.</b> Structured and unstructured datasets from local storage, databases or cloud platforms; server retrieves/processes data on request (e.g., customer interaction logs for recommendation; text repository for summarisation).</li>
+<li><b>Prompts &mdash; reusable templates for workflow optimisation.</b> Predefined templates/workflows generated and maintained by the server for consistent responses and efficient repetitive tasks (e.g., customer-support chatbot templates; annotation tasks).</li>
+</ul>
+
+<h2>8. Transport Layer and Communication</h2>
+<ul>
+<li>Ensures <b>secure, bidirectional communication</b>, real-time interaction and efficient data exchange between host environment and external systems.</li>
+<li>Manages transmission of the client's <b>initial request</b>, the server's <b>response listing capabilities</b> (available tools, resources, prompts) and <b>notifications</b>.</li>
+<li><b>Process:</b> (1) client sends <b>initial request</b> to query server functionality &rarr; (2) server sends <b>initial response</b> listing tools/resources/prompts &rarr; (3) once connected, continuous <b>notifications</b> inform the client of status changes/updates in real time.</li>
+<li>Keeps AI models synchronised with external resources. (Fig. 4 shows transports: <b>STDIO</b> for local servers; <b>HTTP/S</b> via an <b>MCP remote proxy</b> for remote servers.)</li>
+</ul>
+
+<h2>9. MCP Server Lifecycle</h2>
+<figure><img src="../assets/u5_fig-mcp3.png"><figcaption>Fig. 3 &mdash; MCP server components and lifecycle: time-ordered flow among developer, server, host, client, user and external resources (top) and four lifecycle phases (bottom)</figcaption></figure>
+<p><b>Four sequential phases</b> based on transitions of primary participant roles (derived from official documentation and analysis of operational workflows): <b>Creation &rarr; Deployment &rarr; Operation &rarr; Maintenance</b>.</p>
+<h3>9.1 MCP server components</h3>
+<table>
+<tr><th>Component</th><th>Contents</th></tr>
+<tr><td><b>Metadata</b></td><td>Name, version, description &mdash; lets clients identify the server.</td></tr>
+<tr><td><b>Configuration</b></td><td>Source code, configuration files, manifest &mdash; operational parameters, environment settings, security policies.</td></tr>
+<tr><td><b>Tool list</b></td><td>Catalogue of tools: name, description, input/output formats, access permissions.</td></tr>
+<tr><td><b>Resources list</b></td><td>Governs access to external data sources (web APIs, databases, local files): data sources, endpoints, permissions.</td></tr>
+<tr><td><b>Prompt templates</b></td><td>Pre-configured task templates and workflows (templates, workflows, metadata).</td></tr>
+</table>
+<h3>9.2 Phase 1 &mdash; Creation (main actor: developer)</h3>
+<p>Turns requirements into a fully defined, executable MCP component.</p>
+<ul>
+<li><b>Metadata definition</b> &mdash; name, version, description, supported protocol version (interoperability &amp; version control).</li>
+<li><b>Capability declaration</b> &mdash; tools/resources/prompts with operational boundaries &amp; permissions; vague/inaccurate declarations &rarr; capability misuse &amp; security violations; many vulnerabilities originate here &rarr; scanning/validation of declarations is essential.</li>
+<li><b>Code implementation</b> &mdash; request handlers that process inputs, run logic, produce structured results; code quality = stability &amp; safety.</li>
+<li><b>Slash command definition</b> &mdash; optional user-interaction commands mapped to prompts; improves usability and intuitive prompt invocation.</li>
+</ul>
+<h3>9.3 Phase 2 &mdash; Deployment</h3>
+<ul>
+<li><b>MCP server release</b> &mdash; package code, config and metadata into a distributable form; version tagging, dependency documentation, integrity verification; publish to MCP server markets (mostly third-party; Anthropic developing an <b>official MCP registry</b> for verified listings and unified distribution).</li>
+<li><b>Installer deployment</b> &mdash; container images, package managers, automated scripts; <b>checksum verification and signature authentication</b> to prevent tampering/malicious binaries.</li>
+<li><b>Environment setup</b> &mdash; environment variables, access credentials, logging policies, network permissions; configuration isolation and <b>least privilege</b>.</li>
+<li><b>Tool registration</b> &mdash; register capabilities with host/orchestration system; declared tools/resources/prompts become discoverable by clients.</li>
+</ul>
+<h3>9.4 Phase 3 &mdash; Operation (runtime)</h3>
+<ul>
+<li><b>Intent analysis</b> &mdash; parse and contextualise user input &rarr; map to the most suitable capability (trigger a tool, retrieve a resource, engage a prompt); misinterpretation &rarr; wrong tool execution, extra latency, risk.</li>
+<li><b>External resource access</b> &mdash; via predefined interfaces under permissions set at creation; must obey <b>authentication, authorisation and sandboxing</b> policies.</li>
+<li><b>Tool invocation</b> &mdash; structured parameter passing, execution monitoring, result serialisation; reliability &amp; isolation determine runtime stability.</li>
+<li><b>Session management</b> &mdash; establish, monitor and close session contexts connecting host, client and UI.</li>
+</ul>
+<h3>9.5 Phase 4 &mdash; Maintenance</h3>
+<ul>
+<li><b>Version control</b> &mdash; auditable revision system; rollback to stable releases; controlled rollout; compatibility testing.</li>
+<li><b>Configuration change management</b> &mdash; controlled workflow (change-request approval, pre-deployment validation).</li>
+<li><b>Access audit</b> &mdash; review authentication/authorisation events, sessions, privilege escalations, external permissions; detect abnormal patterns; enforce least privilege and compliance.</li>
+<li><b>Log audit</b> &mdash; centralised log aggregation and integrity-protected storage for forensics/incident response; anomaly detection or attack-signature correlation reveals early compromise or degradation.</li>
+</ul>
+<table>
+<tr><th>Phase</th><th>Activities (16 total)</th></tr>
+<tr><td>Creation</td><td>Metadata definition &bull; Capability declaration &bull; Code implementation &bull; Slash command definition</td></tr>
+<tr><td>Deployment</td><td>MCP server release &bull; Installer deployment &bull; Environment setup &bull; Tool registration</td></tr>
+<tr><td>Operation</td><td>Intent analysis &bull; External resource access &bull; Tool invocation &bull; Session management</td></tr>
+<tr><td>Maintenance</td><td>Version control &bull; Configuration change &bull; Access audit &bull; Log audit</td></tr>
+</table>
+
+<h2>10. Current Landscape</h2>
+<h3>10.1 Ecosystem overview &mdash; key adopters (to Sept 2025)</h3>
+<table>
+<tr><th>Category</th><th>Company / product &mdash; key use</th></tr>
+<tr><td><b>AI models &amp; frameworks</b></td><td>Anthropic (Claude) &mdash; full MCP support in desktop; <b>OpenAI</b> &mdash; MCP across products and Agent SDK; <b>Google DeepMind</b> &mdash; MCP for Gemini; Baidu Maps &mdash; geolocation/spatial services; Blender MCP &mdash; Blender/Unity 3D model generation via natural language.</td></tr>
+<tr><td><b>Developer tools</b></td><td>Replit; Microsoft Copilot Studio (announced March 2025); Sourcegraph Cody (via OpenCTX); Codeium; Cursor (Composer); Cline (VS Code agent).</td></tr>
+<tr><td><b>IDEs / editors</b></td><td>Zed (slash commands); JetBrains; Windsurf; TheiaAI/TheiaIDE; Emacs MCP; OpenSumi.</td></tr>
+<tr><td><b>Cloud platforms &amp; services</b></td><td>Cloudflare (remote MCP hosting, OAuth, multi-tenant); Tencent Cloud; Alibaba Cloud Bailian (full lifecycle MCP service); Huawei Cloud; Block (Square); Stripe (payment APIs via MCP); Alipay/Ant Group (Alipay MCP Server, MCP Zone).</td></tr>
+<tr><td><b>Web automation &amp; data</b></td><td>Apify MCP Tester (SSE); LibreChat; Baidu Create Conference (MCP ecosystem forum).</td></tr>
+</table>
+<ul>
+<li>Adoption by leaders (Anthropic, OpenAI) sets precedent; Chinese tech giants (Baidu) show potential to standardise workflows globally; dev tools embed MCP for agentic workflows; Cloudflare, Block, Stripe explore MCP for security, scalability, governance in multi-tenant settings.</li>
+<li><b>Maturity is uneven:</b> many community servers are prototypes; few have stable maintenance or standard documentation. <b>Platform governance:</b> "walled gardens" treat data as a controlled resource &mdash; platforms may expose only low-risk functions via MCP (e.g., a map service shares public location/route data but not navigation history; a social platform allows public post lookup but not private messages/recommendation algorithms) &rarr; <b>tension between open interoperability and proprietary data control</b>.</li>
+</ul>
+<h3>10.2 Community-driven MCP servers</h3>
+<ul>
+<li>No official marketplace yet; community fills the gap with directories (websites, GitHub repos, desktop apps): <b>26 major MCP collections</b> catalogued (Sept 2025). Anthropic's <b>Official Collection</b> (GitHub modelcontextprotocol/servers, 1,204 servers) and a preview <b>MCP Registry</b> (community-driven centralised directory).</li>
+<li>Examples by size: <b>MCPWorld (Baidu) 26,404</b>; <b>MCP.so 16,592</b>; MCP Servers Repository 13,596; AIbase MCP 12,448; <b>Glama 9,415</b>; <b>Smithery 6,888</b>; <b>PulseMCP 6,072</b>; ModelScope MCP Marketplace 5,441; Awesome MCP Servers (wong2) 2,402; Cursor Directory MCP 1,800; Official Collection 1,204; AiMCP 907; Dockmaster 516 (desktop); MCP Market 463; MCP.run 242; Cline MCP Marketplace 154; Bailian MCP Market 151; mcp-get 59; Toolbase 24 (desktop); Awesome Crypto MCP Servers 12.</li>
+<li><b>Quality is uneven:</b> MCP.so lacks formal security/identity verification; of <b>300 sampled servers, 30</b> had "MCP" in the title but weren't Model Context Protocol and <b>18</b> were in development/unavailable &rarr; directories may overstate numbers. Platforms like <b>mcp-get</b> verify and sign servers but have few verified servers/low adoption &rarr; trade-off between openness and quality control; need stronger validation standards and curation.</li>
+</ul>
+<h3>10.3 SDKs and tools</h3>
+<ul>
+<li><b>Official SDKs:</b> TypeScript, Python, Java, Kotlin, C#.</li>
+<li><b>Community frameworks:</b> EasyMCP, FastMCP (lightweight TypeScript servers); FastAPI-to-MCP auto generator (expose FastAPI endpoints as MCP tools); Foxy Contexts (Golang); Higress MCP Server Hosting (Envoy-based API gateway with wasm plugins).</li>
+<li><b>Generation/management platforms:</b> Mintlify, Speakeasy, Stainless &mdash; automate MCP server generation, curated lists, faster deployment.</li>
+</ul>
+
+<h2>11. Use Cases &mdash; OpenAI, Cursor, Cloudflare</h2>
+<h3>11.1 OpenAI &mdash; MCP in AI agents and SDKs</h3>
+<ul>
+<li>The <b>Agents SDK</b> covers managing conversations, invoking tools, task delegation, input/output verification, session recording; a little Python gives multi-turn conversations, flexible tool calls and multi-agent collaboration.</li>
+<li>Before MCP, developers customised connection logic for each tool (time-consuming, error-prone). Now they <b>configure the MCP tool address</b> and the agent <b>automatically discovers, connects and calls</b> it wherever deployed &mdash; unified integration, easier maintenance/extension.</li>
+<li><b>ChatGPT supports MCP in developer mode</b>: connect MCP tools, not just query but <b>write to external systems</b>, trigger automated tasks, chain tools &mdash; from Q&amp;A assistant to a continuously expandable platform.</li>
+</ul>
+<h3>11.2 Cursor &mdash; MCP-powered code assistants</h3>
+<ul>
+<li>AI programming tools (Cursor, Claude Code, Cline) use natural language to generate code, debug, refactor. MCP lets Cursor access <b>external APIs, code repositories and automation tools</b>.</li>
+<li>Process: <b>instruction parsing &rarr; tool scheduling &rarr; task distribution &rarr; result feedback</b>. Example: "Help me perform a page visit and take a screenshot on qq.com" &mdash; Cursor decides external tools are needed, requests via MCP; the server schedules <b>Playwright MCP</b> to visit/screenshot and returns results. Even form submissions, AJAX requests, multi-page navigation tests can run inside the IDE.</li>
+<li>Developers just declare tool addresses (local, remote or cloud); Cursor coordinates tools by scenario. <b>Challenges:</b> data compatibility between tools; permission management &amp; security isolation; <b>network latency</b> from distributed calls.</li>
+</ul>
+<h3>11.3 Cloudflare &mdash; remote MCP server hosting and scalability</h3>
+<figure><img src="../assets/u5_fig-mcp4.png"><figcaption>Fig. 4 &mdash; Local and remote MCP communication via proxy: local MCP server over STDIO; remote MCP server over HTTP/S through an MCP remote proxy</figcaption></figure>
+<ul>
+<li>Turns MCP from local-only into a <b>scalable cloud solution</b>: no need to configure servers on own machines &rarr; lower technical barrier.</li>
+<li><b>Managed authentication with OAuth 2.0</b> (only authorised agents/users); <b>persistent state and secure storage</b> via <b>Durable Objects and Workers KV</b> (each MCP session keeps its data across growth/devices); servers can connect to external APIs, automate multi-step workflows, use third-party services.</li>
+<li><b>Multi-tenant</b> design: different users/orgs safely share infrastructure without data leakage; developers focus on features while Cloudflare handles security, scaling, connectivity.</li>
+<li><b>Challenges:</b> careful <b>authorisation scopes</b> for sensitive resources; privacy &amp; <b>data residency</b> across regions; low latency/stable connections for real-time workflows; secure tool design and session management remain developer responsibility.</li>
+<li>Result: a universal interface for safe, extensible, cross-device AI automation, accessible to technical and non-technical users.</li>
+</ul>
+
+<h2>12. Security and Privacy Analysis (start of Section 5)</h2>
+<p>The paper categorises threats by <b>attacker type</b> (malicious developers, external attackers, malicious users, security flaws; 16 scenarios) and across the four lifecycle phases, validating them via case studies, and recommends phase-specific safeguards: e.g., <b>scan &amp; validate capability declarations</b> (creation), <b>checksum/signature verification of installers</b> and <b>least-privilege environment setup</b> (deployment), <b>authentication, authorisation, sandboxing</b> for resource access and tool invocation (operation), <b>auditable version control, change management, access &amp; log audits</b> (maintenance). Key risks named: <b>tool poisoning, installer spoofing, unauthorised access</b>. <i>(The supplied PDF excerpt ends where the detailed threat taxonomy begins.)</i></p>
+
+<h2>13. Unit Summary</h2>
+<ul class="sum">
+<li>Agentic applications: <b>creative</b> (Director/Technical supervisor/Visualisation), <b>conversational/NLP</b> (Query understanding/Knowledge navigation/Response synthesis), <b>robotics</b> (Planning &amp; coordination/Robot control/Quality &amp; optimisation/Exception handling), <b>decision support</b> (Strategic/Operational/Risk/Sustainability).</li>
+<li>Common pattern: multi-agent collaboration + shared context + feedback loops + integration with enterprise/external systems &rarr; partners, not tools.</li>
+<li><b>MCP</b> = open, bi-directional standard for model&ndash;tool interaction; <b>host &rarr; client (1:1) &rarr; server</b> offering <b>tools, resources, prompts</b> over a transport layer (STDIO local / HTTP/S remote).</li>
+<li>MCP improves on manual API wiring, plugins, agent frameworks and RAG via <b>dynamic discovery, schema negotiation, bi-directional channels, access control</b>.</li>
+<li>Server lifecycle: <b>Creation, Deployment, Operation, Maintenance</b> (16 activities); security risks tied to each phase.</li>
+<li>Landscape: broad adoption (Anthropic, OpenAI, Google, IDEs, cloud); 26 community directories with uneven quality; official SDKs in 5 languages; Cloudflare enables remote, multi-tenant hosting with OAuth 2.0.</li>
+</ul>
+<div class="exam"><span class="t">Likely exam questions</span>
+1) Explain agentic applications in any two domains with agents, environment and benefits. 2) What is MCP? Why was it needed vs manual API wiring, plugins, frameworks and RAG? 3) Explain MCP architecture (host, client, server; tools, resources, prompts) with a diagram. 4) Describe the four phases and 16 activities of the MCP server lifecycle. 5) Discuss MCP's landscape/adoption and the OpenAI, Cursor and Cloudflare use cases. 6) Name the attacker types and key threats in MCP.</div>
+<div class="foot">Sources: Unit-5 Part-1 (Common Use Cases and Applications, Ch.10) &amp; Unit-5 Part-2 (MCP: Landscape, Security Threats, and Future Research Directions, arXiv 2503.23278v3) &mdash; summarised for RVCE study use.</div>
+</body></html>
