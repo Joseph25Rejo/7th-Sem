@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Agentic AI - Unit 1 Consolidated Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Agentic AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 1 &mdash; Introduction to Agents and Their World</h1>
+  <div class="sub">Defining agents &bull; Components of an agent &bull; Why agents? &bull; AI interfaces &bull; Self-governance, agency &amp; autonomy</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Defining agents &amp; the four LLM interaction types</li>
+<li>Multi-agent systems (intro)</li>
+<li>The five component systems of an agent</li>
+<li>The rise of the agent era &mdash; why agents? (AutoGPT, AGI)</li>
+<li>Peeling back the AI interface</li>
+<li>Navigating the agent landscape</li>
+<li>Principles of agentic systems: self-governance, agency, autonomy</li>
+<li>Worked example &mdash; travel-booking assistant (algorithm + Python)</li>
+<li>Applications of agentic systems (robotics, AI, systems engineering)</li>
+<li>Intelligent agents &amp; their characteristics</li>
+<li>Unit summary &amp; quick revision</li>
+</ol></div>
+
+<h2>1. Defining Agents</h2>
+<p>The <b>agent</b> is not a new idea in ML/AI. In <b>reinforcement learning</b> an agent is an active decision-making and learning intelligence; in other areas the word means an automated application or software that does something <i>on your behalf</i>.</p>
+<div class="def"><span class="t">Dictionary definition used in this course (Merriam-Webster)</span>
+An agent is: (1) <b>one that acts or exerts power</b>; (2) <b>something that produces or can produce an effect</b>; (3) <b>a means or instrument by which a guiding intelligence achieves a result</b>.</div>
+<ul>
+<li>The term <b>assistant</b> is treated as <b>synonymous with agent</b>; tools like <b>OpenAI GPT Assistants</b> fall under the "AI agent" umbrella.</li>
+<li>OpenAI avoids the word <i>agent</i> because, in ML history, an agent is <b>self-deciding and autonomous</b>.</li>
+<li>In AI an agent = an entity that <b>automates interaction with a Large Language Model (LLM)</b>.</li>
+</ul>
+
+<h3>1.1 Four ways a user interacts with an LLM (Figure 1.1)</h3>
+<figure><img src="../assets/u1_fig1-1.png"><figcaption>Figure 1.1 &mdash; Direct LLM use vs. proxy agent, agent/assistant, and autonomous agent</figcaption></figure>
+<table>
+<tr><th>Type</th><th>What happens</th><th>Example</th></tr>
+<tr><td><b>Direct user interaction</b></td><td>User talks straight to the LLM. No proxy/assistant interjects.</td><td>Early ChatGPT: "Please explain the definition of agent."</td></tr>
+<tr><td><b>Agent / assistant proxy</b></td><td>An LLM intercepts the request and <b>reformulates</b> it into a format better suited to the task/model. Helps users with unfamiliar tasks or models.</td><td>DALL-E 3 via ChatGPT &mdash; ChatGPT writes a better image prompt for the image-generation model.</td></tr>
+<tr><td><b>Agent / assistant</b></td><td>LLM is aware of plugin/assistant <b>functions</b> and prepares calls to them. <b>Asks for user approval</b> before executing; result returns to the LLM, which wraps it in natural language.</td><td>ChatGPT plugin / GPT assistant: "What is the temperature in Calgary today?" &rarr; weather API call &rarr; user confirms &rarr; reply.</td></tr>
+<tr><td><b>Autonomous agent</b></td><td>Interprets the request, <b>constructs a plan</b>, identifies <b>decision points</b>, executes steps and makes decisions independently. May ask feedback at milestones but has <i>free rein</i> to explore &amp; learn. <b>Raises the most ethical and safety concerns.</b></td><td>"Filter my emails by importance and notify me of the top 5" &mdash; the agent reads, sorts, decides, notifies.</td></tr>
+</table>
+
+<h2>2. Multi-Agent Systems (introduction)</h2>
+<p>For complex problems, agents are broken into <b>profiles / personas</b>. Each profile has a specific task and executes it with specialised tools and knowledge. <b>Multi-agent systems</b> are agent profiles that work together in various configurations to solve a problem.</p>
+<figure><img src="../assets/u1_fig1-2.png"><figcaption>Figure 1.2 &mdash; Multi-agent system: a controller/proxy talks to the user; Coder and Tester agents work in the background</figcaption></figure>
+<ul>
+<li><b>Controller / proxy agent</b> &mdash; communicates directly with the user, can execute code on the user's behalf.</li>
+<li><b>Coder profile</b> writes the code requested; <b>Tester profile</b> writes unit tests. They communicate and loop <i>until code and tests work as expected</i>, then pass the result to the user.</li>
+<li>Multi-agent systems may work autonomously <i>or</i> be guided entirely by human feedback. (Platform covered later: Microsoft <b>AutoGen</b>.)</li>
+<li><b>Benefits</b>: like a single agent but "magnified" &mdash; a single agent specialises in one task, multi-agent systems tackle <b>multiple tasks in parallel</b>; agents also give <b>feedback and evaluation</b> to each other, <b>reducing errors</b>.</li>
+</ul>
+
+<h2>3. Component Systems of an Agent</h2>
+<p>Agents are complex units built from component systems &mdash; the tools used to complete goals or even create new ones. Components are split into <b>five categories</b>; at the core of every agent is the <b>profile &amp; persona</b>, with the other systems extending from it.</p>
+<figure><img src="../assets/u1_fig1-3.png"><figcaption>Figure 1.3 &mdash; The five main components of a single-agent system</figcaption></figure>
+<table>
+<tr><th>#</th><th>Component</th><th>Role</th></tr>
+<tr><td>1</td><td><b>Profile &amp; Persona</b></td><td>Persona = agent's main role/function, usually defined in the <b>system prompt</b>. Profile describes the entire agent system.</td></tr>
+<tr><td>2</td><td><b>Actions &amp; Tool Use</b></td><td>A function/tool the agent can use.</td></tr>
+<tr><td>3</td><td><b>Memory &amp; Knowledge</b></td><td>Provides added <b>context</b> for a specific request/task.</td></tr>
+<tr><td>4</td><td><b>Reasoning &amp; Evaluation</b></td><td>Grounds the agent and lets it make better decisions.</td></tr>
+<tr><td>5</td><td><b>Planning &amp; Feedback</b></td><td>Lets the agent learn and improve on task completion.</td></tr>
+</table>
+
+<h3>3.1 Agent Profile and Persona</h3>
+<figure><img src="../assets/u1_fig1-4.png"><figcaption>Figure 1.4 &mdash; Creating agent profiles</figcaption></figure>
+<ul>
+<li>The <b>persona (system prompt)</b> guides the agent to complete tasks, learn how to respond, and handle nuances. It includes the <b>background</b> (e.g., coder, writer) and <b>demographics</b>.</li>
+<li><b>Profile contents</b>: persona (role, e.g., coder/tester) and demographics (sex, age, background).</li>
+<li><b>Profile generation</b> methods: <b>Handcrafted</b> (manually designed by humans), <b>LLM-generated</b> (directed by human prompts), <b>Data-generated</b> (constructed from data personas) &mdash; including novel techniques like <b>evolutionary algorithms</b>.</li>
+<li>Effective personas are built with techniques such as <b>rubrics</b> and <b>grounding</b>; human-formulated vs AI-formulated profiles are compared.</li>
+</ul>
+<div class="key"><span class="t">Note</span>Think of a profile as describing the <i>work the agent will perform and the tools it needs</i>; the persona is one element of it.</div>
+
+<h3>3.2 Actions and Tool Use</h3>
+<figure><img src="../assets/u1_fig1-5.png"><figcaption>Figure 1.5 &mdash; Aspects of agent actions</figcaption></figure>
+<p>Actions are activities directed toward <b>task completion</b> or <b>acquiring information</b>.</p>
+<ul>
+<li><b>Action target</b> &mdash; what the action aims at: <i>task completion, exploration, communication</i>. Targets can be semantic or native functions, tools, self-knowledge, other agents.</li>
+<li><b>Action space &amp; impact (effect)</b> &mdash; how actions affect task outcomes, the <i>environment</i>, <i>new actions</i>, <i>internal states</i>, <i>other agents</i> and self-knowledge.</li>
+<li><b>Action generation</b> &mdash; <b>manual</b> creation, <b>memory recollection</b>, or <b>plan following</b>.</li>
+</ul>
+
+<h3>3.3 Knowledge and Memory</h3>
+<figure><img src="../assets/u1_fig1-6.png"><figcaption>Figure 1.6 &mdash; Role and use of agent memory and knowledge</figcaption></figure>
+<ul>
+<li>Agents use knowledge/memory to <b>annotate context with the most pertinent information while limiting the number of tokens</b>.</li>
+<li><b>Retrieval structure</b>: <b>Unified</b> (single structure) or <b>Hybrid</b> (mix of retrieval forms).</li>
+<li><b>Retrieval formats</b>: <b>Language</b> (e.g., PDF documents), <b>Databases</b> (relational, object, document), <b>Embeddings</b> (vector representations enabling <b>semantic similarity search</b>), <b>Lists</b> (simple lists as memories).</li>
+<li><b>Retrieval operation</b>: <b>Augmentation</b>, <b>Semantic extraction</b>, <b>Compression</b>.</li>
+</ul>
+
+<h3>3.4 Reasoning and Evaluation</h3>
+<figure><img src="../assets/u1_fig1-7.png"><figcaption>Figure 1.7 &mdash; Reasoning and evaluation component</figcaption></figure>
+<p>LLMs/agents can effectively reason; this component annotates the workflow with the ability to think through problems and evaluate solutions.</p>
+<table>
+<tr><th>Reasoning (self-reflect, reason out task completion)</th><th>Evaluation (basis for self-reflection on and after task completion)</th></tr>
+<tr><td>Zero-shot prompting<br>One-shot prompting<br>Few-shot prompting<br>Chain of thought<br>Tree of thought<br>Skeleton of thought</td><td>Self-consistency<br>Prompt chaining</td></tr>
+</table>
+
+<h3>3.5 Planning and Feedback</h3>
+<figure><img src="../assets/u1_fig1-8.png"><figcaption>Figure 1.8 &mdash; Agent planning and feedback</figcaption></figure>
+<p>Planning organises tasks to achieve higher-level goals. Two approaches:</p>
+<ul>
+<li><b>Planning <u>without</u> feedback (autonomous)</b> &mdash; agent decides independently: <i>basic planning, automatic reasoning with tool use, sequential planning</i>.</li>
+<li><b>Planning <u>with</u> feedback</b> &mdash; plans monitored/modified from inputs such as <i>environmental, human, LLM, adaptive constructive feedback</i>.</li>
+<li>Within planning: <b>single-path reasoning</b> (sequential, step-by-step) vs <b>multipath reasoning</b> (explore several strategies and save efficient ones for future use). <b>External planners</b> (code or other agent systems) may orchestrate plans.</li>
+<li>Any agent type &mdash; proxy, agent/assistant, autonomous &mdash; may use some or all components; even regular agents benefit from planning.</li>
+</ul>
+
+<h2>4. Rise of the Agent Era &mdash; Why Agents?</h2>
+<ul>
+<li>Agents moved from a main research commodity to <b>mainstream software development</b>; many tools/platforms help build them.</li>
+<li>After ChatGPT's release, <b>prompt engineering</b> emerged: techniques/patterns for better, more consistent output. But it only goes so far &mdash; effective prompting needs <b>iteration, reflection and more iteration</b>. This led to the first agent systems, e.g. <b>AutoGPT</b>.</li>
+</ul>
+<figure><img src="../assets/u1_fig1-9.png"><figcaption>Figure 1.9 &mdash; Original design of the AutoGPT agent system</figcaption></figure>
+<div class="def"><span class="t">AutoGPT loop</span>
+User sets the <b>main objective (goal)</b> &rarr; agent <b>defines and sequences tasks</b> &rarr; <b>task execution</b> (can use the Internet, other tools, GPT-4, even write code) &rarr; <b>evaluation</b> after every iteration &rarr; if goals not complete, <b>replan</b> using new knowledge/human feedback; if complete, finish. It can be set to ask permission for every task or every <i>x</i> tasks.</div>
+<ul>
+<li>AutoGPT was the first to demonstrate the power of <b>task planning + iteration</b> with LLMs; "planning, iteration and repetition" are the generally accepted best process for complex, multifaceted goals.</li>
+<li>Autonomous systems require <b>trust</b> in the decision-making, the <b>guardrails/evaluation system</b>, and the <b>goal definition</b>. Trust is acquired over time; lack of trust stems from lack of understanding of capabilities.</li>
+<li><b>AGI</b> (Artificial General Intelligence) &mdash; intelligence that can learn to accomplish <i>any task a human can</i>; many practitioners believe AGI via autonomous agents is attainable.</li>
+<li>Therefore many production-ready agent tools are <b>not autonomous</b> but still deliver benefits by managing/automating tasks with GPTs. Agents/tools are only the top layer of a <b>new software-development paradigm</b>.</li>
+</ul>
+
+<h2>5. Peeling Back the AI Interface</h2>
+<p>The agent paradigm shifts how we develop software and handle data: instead of <b>UIs, APIs and query languages like SQL</b>, software and data will be interfaced through <b>natural language</b>.</p>
+<div class="def"><span class="t">AI interface</span>A collection of <b>functions, tools and data layers that expose data and applications through natural language</b>. (The word "semantic" has been used for these before, but the book uses "AI interface".)</div>
+<figure><img src="../assets/u1_fig1-10.png"><figcaption>Figure 1.10 &mdash; How agents will interact with software systems (example: "Please create a report of last year's sales.")</figcaption></figure>
+<ol>
+<li><b>Planning</b>: agent takes the goal and breaks it into tasks &mdash; collect data, annotate data, format data &amp; create report visualisations, present report.</li>
+<li><b>GPT data layer</b> (database) &mdash; queried using natural language.</li>
+<li><b>GPT functions</b> (APIs, web browsing, search) &mdash; annotate data by calling semantic functions in natural language.</li>
+<li><b>GPT tools / external agents</b> &mdash; format data and may write code to generate visuals.</li>
+<li>All communication happens via <b>natural language</b>; the agent finally presents the report.</li>
+</ol>
+<p>AI interfaces let agents consume services, tools and data &rarr; <b>higher accuracy, more trustworthy and autonomous applications</b>. It may not fit all software/data but will dominate many use cases.</p>
+
+<h2>6. Navigating the Agent Landscape</h2>
+<p>GPT agents represent a complete shift in how consumers and developers find information, build software and access data. Almost daily a new agent framework, component or interface appears on GitHub or in research papers &mdash; overwhelming for newcomers. Understanding the progression and interaction of these tools is key to developing single, multiple or autonomous agent systems.</p>
+
+<h2>7. Principles of Agentic Systems</h2>
+<p>Agentic systems drive innovation in <b>robotics, AI and systems engineering</b>; they challenge conventional ideas of accountability and responsibility. Three central ideas: <b>self-governance, agency, autonomy</b>.</p>
+<h3>7.1 Where agentic systems are making headway</h3>
+<table>
+<tr><th>Field</th><th>Contribution</th></tr>
+<tr><td><b>Robotics</b></td><td>Autonomous robots that navigate complex environments, perform intricate tasks, adapt to changing conditions &mdash; manufacturing, exploration, search &amp; rescue, healthcare (e.g., navigate disaster zones, assess risks, assist rescue).</td></tr>
+<tr><td><b>AI</b></td><td>Intelligent agents and decision-support systems using algorithms, ML and knowledge representation to analyse data, reason, recommend or decide &mdash; finance, healthcare, transportation, marketing.</td></tr>
+<tr><td><b>Systems engineering</b></td><td>Complex, distributed, adaptive systems of interacting subsystems each with agentic behaviour &mdash; power grids, transportation networks, cyber-physical systems (resource allocation, fault tolerance).</td></tr>
+</table>
+
+<h3>7.2 Self-governance</h3>
+<div class="def"><span class="t">Definition</span>The ability of a system to <b>govern/control itself without external direction</b> &mdash; make its own decisions, set its own goals and regulate behaviour using internal rules, models and decision algorithms. Behaviour changes when the environment or objectives change; interactions with environment/other systems are meaningful to it and influence it.</div>
+<ul>
+<li><b>Self-organization</b> &mdash; organise internal processes, resources, behaviour without external intervention.</li>
+<li><b>Self-regulation</b> &mdash; monitor and adjust own actions/outputs from feedback to stay within parameters/constraints.</li>
+<li><b>Self-adaptation</b> &mdash; modify behaviour, strategies or decision-making in response to environment/internal changes.</li>
+<li><b>Self-optimization</b> &mdash; continuously improve performance/efficiency via learning, experience or evolutionary processes.</li>
+<li><b>Self-determination</b> &mdash; set own objectives, priorities and courses of action, not entirely controlled by external forces.</li>
+</ul>
+<p>Enabled by ML, knowledge representation, reasoning and decision-making algorithms.</p>
+
+<h3>7.3 Agency</h3>
+<div class="def"><span class="t">Definition</span>The capability of an individual or entity to <b>act independently and make choices</b>.</div>
+<ul>
+<li><b>Decisional authority</b> &mdash; power to act per a chosen alternative; evaluates options and selects the best using internal decision-making rather than just external forces/predetermined rules.</li>
+<li><b>Intentionality</b> &mdash; presence of intentions/goals guiding behaviour; not merely reactive, has a sense of purpose and adjusts strategies.</li>
+<li><b>Responsibility</b> &mdash; answerability/accountability for outcomes and consequences of actions.</li>
+</ul>
+<div class="ex"><span class="t">Travel-booking assistant</span>Analyses flight availability, ticket price and user restrictions (seat class) and decides how to look for flights/hotels to <b>minimise overall cost</b>; it is responsible for the outcome of those decisions.</div>
+
+<h3>7.4 Autonomy</h3>
+<p>Closely related to agency but focuses on the <b>degree of independence</b>. In AI/robotics it is the extent to which a system performs tasks and decisions without continuous human intervention.</p>
+<ul>
+<li><b>Operational autonomy</b> &mdash; perform tasks without direct human intervention, using internal processes, decision algorithms and environmental sensing.</li>
+<li><b>Functional autonomy</b> &mdash; make choices/take action to achieve targets, modulated by environment/context; adapt behaviour to changing conditions.</li>
+<li><b>Hierarchical autonomy</b> &mdash; amount of decisional authority granted within a larger framework; higher = more latitude over subsystems, lower = more constraints/oversight.</li>
+</ul>
+<div class="ex"><span class="t">Travel assistant</span>Operational: books flights/hotels, manages reminders with little human input. Functional: interprets commands, adapts to preferences. Hierarchical: depends on privacy preferences and access to sensitive data.</div>
+<div class="key"><span class="t">Important</span>Autonomy does <b>not</b> imply absence of human oversight &mdash; systems operate inside boundaries set by designers (e.g., the chatbot asks for dates, locations, name, address, and prompts for clarification). <b>Ethical considerations</b>: as autonomy grows, <b>alignment with human values</b> and the risks of independent decisions become crucial.</div>
+
+<h2>8. Worked Example &mdash; Travel Booking Agent with Agency &amp; Autonomy</h2>
+<p><b>Algorithm 1</b> (not yet using AI; just illustrates the concepts):</p>
+<pre>Require: Agent name N
+Ensure: Initialized TravelAgent A with agency and autonomy
+1: A &lt;- CreateTravelAgent(N)
+2: A.goals &lt;- empty list
+3: A.knowledge_base &lt;- empty dictionary
+// Agency: act on behalf of a user
+4: function SetGoal(G):          A.goals.Append(G)             // defining objectives
+6: function UpdateKnowledge(K,V): A.knowledge_base[K] &lt;- V        // acquire info from an API, and score
+// Autonomy: operate independently
+8: function MakeDecision(Options): best = max(Options, key=score); return best
+11: function BookTravel(Departure, Destination):
+12:     Output "Agent A.name is booking travel to Destination"
+13:     SetGoal("Book flight from Departure to Destination")
+14:     UpdateKnowledge({Departure, Destination})
+15:     MakeDecision()           // find the best flight independently
+16: Output A</pre>
+<ol>
+<li>Name the agent (<code>TripPlanner</code>); create a <code>TravelAgent</code> object &mdash; an entity capable of agency and autonomy.</li>
+<li><code>A.goals</code> list &rarr; <b>agency</b> (intentions/desired outcomes on behalf of the user).</li>
+<li><code>A.knowledge_base</code> dictionary &rarr; supports both agency (acting for users) and autonomy (information for independent decisions).</li>
+<li><code>SetGoal</code> adds a goal (e.g., from chat: "Book me a flight from San Diego to Seattle").</li>
+<li><code>UpdateKnowledge</code> acquires information (flight options via travel APIs) and <b>scores</b> options (late flights low score, early flights high).</li>
+<li><code>MakeDecision</code> selects the highest-scoring option &rarr; <b>autonomy</b> (no direct human intervention).</li>
+<li><code>BookTravel</code> ties them together: set goal &rarr; update knowledge &rarr; decide &rarr; book.</li>
+</ol>
+<pre>def book_travel(departure: str, destination: str):
+    self.set_goal(f"Book flight from {departure} to {destination}")
+    self.update_knowledge(departure, destination)
+    try:
+        best_flight = self.make_decision()
+        booking_confirmation = f"BOOKING_#12345"
+        self.knowledge_base['booking_confirmation'] = booking_confirmation
+        print(f"Booking confirmed: {booking_confirmation}")
+    except Exception as e:
+        print(f"Booking failed: {str(e)}")
+
+if __name__ == "__main__":
+    agent = TravelAgent("TripPlanner")
+    agent.book_travel("SAN", "SEA")</pre>
+<p><b>Sample output:</b> <code>Agent TripPlanner is booking travel from SAN to SEA</code> &rarr; <code>Goal set</code> &rarr; <code>Knowledge updated with 3 flight options</code> &rarr; <code>Decision made: Selected flight JetBlue</code> &rarr; <code>Booking confirmed: BOOK-JetBlue-TRIPPLANNER</code>. Final state: Name <i>TripPlanner</i>, Goals <i>['Book flight from SAN to SEA']</i>.</p>
+<div class="warn"><span class="t">Limitation</span>The agent has agency and autonomy but is <b>not intelligent</b>: it needs airport codes and cannot understand plain-language input like "Book me a flight from San Diego to Seattle". This is where <b>generative AI (LLMs)</b> steps in.</div>
+
+<h2>9. Intelligent Agents and Their Characteristics</h2>
+<div class="def"><span class="t">Intelligent agent</span>A complex, <b>self-governed entity that perceives its environment and takes action to achieve goals</b>. Ranges from basic rule-following systems to advanced systems that learn and adapt from experience.</div>
+<ul>
+<li><b>Reactivity</b> &mdash; responds to environmental changes/events in real time; continuously monitors surroundings and adjusts behaviour.</li>
+<li><b>Proactiveness</b> &mdash; not merely reactive; anticipates future needs, challenges, opportunities and takes initiative; goal-oriented.</li>
+<li><b>Social ability</b> &mdash; interacts/cooperates with agents or humans in multi-agent systems: communication, coordination, negotiation, leveraging collective intelligence.</li>
+</ul>
+<p><b>Additional advanced capabilities:</b> <b>Learning &amp; adaptation</b> (ML, reinforcement learning, evolutionary algorithms) and <b>Reasoning &amp; planning</b> (knowledge representation, logical inference, planning algorithms to find optimal courses of action). <i>(Autonomy &amp; self-governance and architecture patterns continue in Unit 2.)</i></p>
+
+<h2>10. Unit Summary &amp; Quick Revision</h2>
+<ul class="sum">
+<li>An <b>agent</b> acts/produces effect/is an instrument of a guiding intelligence; in AI it automates LLM interaction. <b>Assistant = agent.</b></li>
+<li><b>Four LLM interaction types</b>: direct user interaction, agent/assistant proxy, agent/assistant, autonomous agent.</li>
+<li><b>Multi-agent systems</b>: profiles working together (often via a proxy); parallelism + mutual evaluation reduce errors.</li>
+<li><b>Five components</b>: profile/persona, actions &amp; tool use, knowledge/memory, reasoning/evaluation, planning/feedback.</li>
+<li>Personas: handcrafted, LLM-generated, data-generated (evolutionary algorithms). Actions: manual, memory recollection, plan following.</li>
+<li>Memory formats: language, databases, embeddings, lists. Reasoning: zero/one/few-shot, CoT, ToT, skeleton-of-thought; evaluation: self-consistency, prompt chaining.</li>
+<li>Planning: with/without feedback; single-path vs multipath; environmental/human/LLM/adaptive constructive feedback.</li>
+<li><b>AutoGPT</b> proved planning + iteration; autonomous agents need trust &rarr; many production tools are non-autonomous.</li>
+<li>New paradigm: <b>AI interfaces</b> (natural-language access to software and data) replace UI/API/SQL-centric access.</li>
+<li><b>Self-governance</b> (self-organization, regulation, adaptation, optimization, determination), <b>agency</b> (decisional authority, intentionality, responsibility), <b>autonomy</b> (operational, functional, hierarchical).</li>
+<li>Intelligent agent traits: <b>reactivity, proactiveness, social ability</b> (+ learning, reasoning/planning, autonomy).</li>
+</ul>
+<div class="exam"><span class="t">Likely exam questions</span>
+1) Define agent and differentiate the four LLM interaction types. 2) Explain the five components of an agent with a neat diagram. 3) Why did the agent era arise? Explain AutoGPT's design. 4) What is an AI interface? 5) Differentiate self-governance, agency and autonomy with the travel-booking example.</div>
+<div class="foot">Sources: Unit-1 Part-1 (Intro to agents and their world) &amp; Unit-1 Part-2 (Principles of Agentic Systems, Packt) &mdash; summarised for RVCE study use.</div>
+</body></html>
