@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Agentic AI - Unit 2 Consolidated Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Agentic AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 2 &mdash; Agent Architectures, Multi-Agent Systems &amp; Tool Use</h1>
+  <div class="sub">Autonomy &amp; characteristics &bull; Deliberative / Reactive / Hybrid architectures &bull; MAS &amp; interaction mechanisms &bull; Tool &amp; function calling &bull; Planning algorithms (intro)</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Intelligent-agent characteristics (recap + advanced)</li>
+<li>Architectures of agentic systems</li>
+<li>Deliberative architecture</li>
+<li>Reactive architecture</li>
+<li>Hybrid architecture</li>
+<li>Multi-agent systems (MAS)</li>
+<li>Characteristics of MAS</li>
+<li>Interaction mechanisms: cooperation, coordination, negotiation</li>
+<li>MAS algorithm for travel booking</li>
+<li>Tool use in agents</li>
+<li>Tool calling vs function calling</li>
+<li>Defining tools (docstring / JSON schema)</li>
+<li>Types of tools &amp; key considerations</li>
+<li>CrewAI tool example &amp; significance of tools</li>
+<li>Planning algorithms &mdash; overview &amp; less-practical algorithms</li>
+<li>Q&amp;A, summary</li>
+</ol></div>
+
+<h2>1. Intelligent Agent Characteristics</h2>
+<div class="def"><span class="t">Intelligent agent</span>Complex, self-governed entity that perceives its environment and acts to achieve goals; from rule-following systems to systems that learn and adapt.</div>
+<table>
+<tr><th>Characteristic</th><th>Meaning</th></tr>
+<tr><td><b>Reactivity</b></td><td>Responds in real time to changes/events in the environment; continuously monitors and adjusts &rarr; actions stay relevant.</td></tr>
+<tr><td><b>Proactiveness</b></td><td>Anticipates needs/challenges/opportunities, takes initiative, goal-oriented; not just reacting.</td></tr>
+<tr><td><b>Social ability</b></td><td>Communication, coordination and negotiation with other agents/humans in multi-agent systems; leverages collective intelligence.</td></tr>
+<tr><td><b>Learning &amp; adaptation</b></td><td>Learns from experience (machine learning, reinforcement learning, evolutionary algorithms), refines decision-making and improves performance.</td></tr>
+<tr><td><b>Reasoning &amp; planning</b></td><td>Analyses complex situations, formulates strategies via knowledge representation, logical inference and planning algorithms.</td></tr>
+<tr><td><b>Autonomy &amp; self-governance</b></td><td>Makes decisions/takes actions independently without constant human supervision &mdash; vital where continuous human control is impractical or impossible.</td></tr>
+</table>
+<p>Applications: robotics, decision-support systems, virtual assistants, gaming, simulations.</p>
+
+<h2>2. Architectures of Agentic Systems</h2>
+<p>Agentic systems executing complex goals autonomously use architectural patterns that define the structure and behaviour for <b>perceiving, reasoning, learning and acting</b>. Three main patterns: <b>deliberative, reactive, hybrid</b>.</p>
+
+<h3>2.1 Deliberative architecture (knowledge-based / symbolic)</h3>
+<p>Relies on <b>explicit representations of knowledge and reasoning</b> to reach decisions; follows the <b>sense &rarr; plan &rarr; act</b> cycle.</p>
+<figure><img src="../assets/u2_fig2-1.png"><figcaption>Figure 2.1 &mdash; Deliberative architecture of an agentic system</figcaption></figure>
+<div class="flow">Sensing &rarr; Knowledge updating &rarr; Planning &amp; reasoning &rarr; Plan execution</div>
+<ol>
+<li><b>Sensing</b> &mdash; perceive/acquire environment information through sensors/inputs.</li>
+<li><b>Knowledge updating</b> &mdash; update internal knowledge base to keep an accurate representation of the current state.</li>
+<li><b>Planning and reasoning</b> &mdash; formulate plans/decisions via constraint satisfaction, logical inference, search algorithms, heuristic-based planning.</li>
+<li><b>Plan execution</b> &mdash; carry out actions, possibly modifying the environment or achieving goals.</li>
+</ol>
+<ul>
+<li><b>Key component:</b> a <b>knowledge base</b> storing symbolic representations of environment, goals, constraints and domain knowledge, encoded in formal language/logic to allow inference.</li>
+<li><b>Techniques:</b> rule-based reasoning, constraint satisfaction, heuristic search.</li>
+<li><b>Advantages:</b> excels at complex reasoning, planning, problem-solving, decision-making in <i>well-defined environments</i>; handles uncertainty/ambiguity via probabilistic reasoning, fuzzy logic, belief revision.</li>
+<li><b>Disadvantages:</b> <b>computational cost</b> of maintaining/reasoning over big knowledge bases (limits real-time responsiveness); knowledge hard to formalise or constantly evolving.</li>
+<li>Often combined with reactive components &rarr; hybrid. Used in robotics, decision-support systems, intelligent tutoring systems.</li>
+</ul>
+
+<h3>2.2 Reactive architecture (behaviour-based / stimulus-response)</h3>
+<p>Provides <b>immediate responses to stimuli</b>. No explicit world model or complex reasoning &mdash; <b>directly maps perceptions onto actions</b> using simple condition-action rules or neural networks.</p>
+<figure><img src="../assets/u2_fig2-2.png"><figcaption>Figure 2.2 &mdash; Reactive architecture (input &rarr; perception &rarr; condition-action rules &rarr; output)</figcaption></figure>
+<table>
+<tr><th>Strengths</th><th>Limitations</th></tr>
+<tr><td>
+<b>Speed &amp; responsiveness</b> &mdash; coupling perception to action bypasses slow reasoning.<br>
+<b>Robustness &amp; fault tolerance</b> &mdash; less susceptible to noise/incomplete information; simple standalone components.<br>
+<b>Handling uncertainty</b> &mdash; reacts to current situation without a precise world model.<br>
+<b>Parallel &amp; distributed processing</b> &mdash; multiple reactive modules run simultaneously and independently &rarr; scalability, modularity.<br>
+<b>Emergence of complex behaviour</b> from interaction of simple behaviours.</td>
+<td>
+<b>Lack of long-term planning</b> &mdash; focuses on immediate responses; hard to pursue multi-step goals.<br>
+<b>Limited reasoning &amp; abstraction</b> &mdash; struggles with abstract reasoning, generalisation, symbolic manipulation.<br>
+<b>Limited learning</b> &mdash; fixed rules/behaviours, little adaptation over time.</td></tr>
+</table>
+<p>Widely used where real-time responsiveness, robustness and uncertainty handling matter: <b>robotics, AI video games, control systems</b>; also serve as components inside hybrid architectures.</p>
+
+<h3>2.3 Hybrid architecture</h3>
+<p>Combines strengths of deliberative and reactive designs in a <b>layered structure</b>:</p>
+<ul>
+<li><b>Reactive layer</b> &mdash; fast, low-level responses; real-time interaction; responsive, fault-tolerant, handles uncertainty.</li>
+<li><b>Deliberative layer</b> &mdash; high-level reasoning/planning; richer representation of environment, goals, constraints; long-term plans and abstract reasoning.</li>
+<li><b>Interaction</b>: reactive layer gives real-time feedback/situational awareness upward; deliberative layer guides it with high-level plans, goals and constraints.</li>
+</ul>
+<p><b>Techniques used in hybrid architectures:</b></p>
+<ul>
+<li><b>Task decomposition</b> &mdash; reactive layer handles low-level, time-critical tasks; deliberative layer does planning/coordination.</li>
+<li><b>Multiplan selection</b> &mdash; deliberative layer generates several plans; reactive layer dynamically selects the best for current conditions.</li>
+<li><b>Planning with external modules</b> &mdash; path planning, resource allocation, scheduling, domain-specific algorithms.</li>
+<li><b>Reflection and refinement</b> &mdash; learn from outcomes and refine reasoning/planning.</li>
+<li><b>Memory-augmented planning</b> &mdash; keep history of past experiences/decisions for future planning.</li>
+</ul>
+<table>
+<tr><th>Architecture</th><th>Best when</th></tr>
+<tr><td>Deliberative</td><td>Intricate reasoning &amp; decision-making in well-defined scenarios</td></tr>
+<tr><td>Reactive</td><td>Dynamic environments needing swift, adaptive responses</td></tr>
+<tr><td>Hybrid</td><td>Balance of responsiveness and reasoning; more capable, adaptable systems (active research area)</td></tr>
+</table>
+<div class="key"><span class="t">Choosing a pattern</span>Depends on <b>task complexity, environmental uncertainty and need for real-time responsiveness</b>.</div>
+
+<h2>3. Multi-Agent Systems (MAS)</h2>
+<div class="def"><span class="t">Definition</span>A subfield of <b>distributed AI</b>: several intelligent agents that <b>interact, cooperate and coordinate</b> to execute tasks and achieve collective goals. Each agent is typically autonomous, perceives via sensors, has a reasoning mechanism, and acts on decisions. A MAS may contain software programs, robots or humans with specialised capabilities.</div>
+<h4>Application domains</h4>
+<table>
+<tr><th>Domain</th><th>Role of MAS</th></tr>
+<tr><td>Supply chain management &amp; logistics</td><td>Agents for suppliers, manufacturers, distributors, retailers decide locally and collaborate on resource allocation, inventory, transport planning.</td></tr>
+<tr><td>Traffic control &amp; transportation</td><td>Agents = vehicles, traffic lights, management centres; reduce congestion, coordinate signals, find optimal routes.</td></tr>
+<tr><td>Robotics &amp; manufacturing</td><td>Coordinate multiple robots (assembly, welding, material handling) for synchronized operation.</td></tr>
+<tr><td>Environmental monitoring &amp; resource management</td><td>Water distribution, forestry, wildlife conservation; agents = stakeholders, sensors, decision makers.</td></tr>
+<tr><td>Distributed sensor networks</td><td>Each node an agent; local processing + information fusion (surveillance, disaster response).</td></tr>
+<tr><td>Intelligent virtual environments &amp; simulations</td><td>Realistic simulation of social systems, economic models, military operations.</td></tr>
+</table>
+<p><b>Key advantages:</b> distributes problem-solving, leverages collective intelligence and specialisation, robustness/fault tolerance via decentralised decisions, integrates heterogeneous components, flexible &amp; scalable &mdash; better than monolithic centralised approaches.</p>
+
+<h3>3.1 Characteristics of MAS</h3>
+<table>
+<tr><th>Characteristic</th><th>Description</th></tr>
+<tr><td><b>Autonomy</b></td><td>Each agent self-governing, decides from its perception and objectives; no centralised control.</td></tr>
+<tr><td><b>Interaction</b></td><td>Communicate via defined protocols: share information, negotiate tasks, coordinate actions &mdash; cooperation, coordination or competition.</td></tr>
+<tr><td><b>Adaptability</b></td><td>Change behaviour when environment or agents' goals change.</td></tr>
+<tr><td><b>Distributed control</b></td><td>Decision-making spread over agents; failure of one agent doesn't necessarily affect the whole system.</td></tr>
+<tr><td><b>Scalability</b></td><td>Agents can be added/removed as needed.</td></tr>
+<tr><td><b>Heterogeneity</b></td><td>Agents may have different architectures, capabilities, goals.</td></tr>
+<tr><td><b>Decentralised data &amp; knowledge</b></td><td>Knowledge distributed among agents &rarr; no single point of failure; local knowledge-based operation.</td></tr>
+</table>
+
+<h3>3.2 Interaction mechanisms in MAS</h3>
+<h4>(a) Cooperation</h4>
+<p>Agents work together toward a <b>common goal</b>; important when no single agent can achieve the objective alone. Agents pool knowledge, resources and efforts &mdash; divide tasks, combine expertise, complement abilities. <i>Example:</i> disaster rescue with drones, robots and humans locating victims.</p>
+<figure><img src="../assets/u2_fig2-3.png"><figcaption>Figure 2.3 &mdash; Cooperation in a MAS (all agents link to a shared goal)</figcaption></figure>
+<h4>(b) Coordination</h4>
+<p>Manages <b>interdependencies</b> from agents' actions &mdash; needed when agents share resources, have overlapping responsibilities or conflicting actions. Mechanisms: <b>task scheduling, resource-allocation management, conflict resolution</b>. <i>Example:</i> manufacturing robots on production lines coordinate shared resources, prevent interference, keep efficiency.</p>
+<figure><img src="../assets/u2_fig2-4.png"><figcaption>Figure 2.4 &mdash; Coordination in a MAS (agents share resources / knowledge base)</figcaption></figure>
+<h4>(c) Negotiation</h4>
+<p>Process by which agents reach <b>agreements</b> on sharing resources, dividing tasks or resolving conflicts, through <b>offers, counteroffers and compromises</b>, even when interests initially conflict. Techniques: <b>auctions, voting protocols, bargaining strategies, game-theoretic approaches</b>.</p>
+<figure><img src="../assets/u2_fig2-5.png"><figcaption>Figure 2.5 &mdash; Negotiation in a MAS (agreement via negotiation over resources toward a goal)</figcaption></figure>
+<table>
+<tr><th>Mechanism</th><th>Purpose</th><th>Travel-industry illustration</th></tr>
+<tr><td>Cooperation</td><td>Common goal</td><td>All agents work to book the traveller's itinerary</td></tr>
+<tr><td>Coordination</td><td>Manage interdependencies</td><td>Travel agency agent needs flight + hotel input to build a package</td></tr>
+<tr><td>Negotiation</td><td>Reach mutually beneficial agreements</td><td>Airline/hotel agents negotiate schedules, rooms, pricing</td></tr>
+</table>
+
+<h3>3.3 MAS in the travel-assistant example &mdash; negotiation process</h3>
+<ol>
+<li><b>Airline agents</b> propose available seats, schedules, pricing.</li>
+<li><b>Hotel agents</b> evaluate proposals using room availability, expected occupancy, demand forecasts and negotiate flight schedules aligning with check-in/out.</li>
+<li><b>Travel-agency agents</b> negotiate with both, considering customer preferences, budget, travel dates.</li>
+<li><b>Transportation agents</b> (car rental, shuttles) offer ground transport and pickup/drop-off schedules and costs.</li>
+</ol>
+<p>Strategies: auctions, bargaining protocols, game-theory, optimisation; <b>multi-attribute utility functions</b> (travel time, cost, comfort, preferences) rank proposals; iterative offers/counteroffers. Decentralised decisions with global optimisation &rarr; resilient to changes in demand, supply, pricing.</p>
+
+<h3>3.4 Algorithm 2 &mdash; MAS for a travel-booking assistant</h3>
+<pre>Require: Airline agents A={A1..An}, Hotel agents H={H1..Hm}
+Ensure: TravelBookingSystem S with Travel Agency agent TA
+function RequestTravelPackage(departure, destination, dates):
+    for each Ai in A: available_flights &lt;- Ai.GetAvailableFlights(...)
+    for each Hj in H: available_rooms   &lt;- Hj.GetAvailableRooms(destination, dates)
+    packages &lt;- TA.CompilePackages(available_flights, available_rooms)
+    return packages
+function BookTravel(selected_package):
+    flight_booking &lt;- selected_package.airline.BookFlight()
+    room_booking   &lt;- selected_package.hotel.BookRoom()
+    if both successful: return CreateBooking(flight_booking, room_booking)
+    else: return FailureNotification()
+function UpdateDynamicPricing(): each Ai.UpdateFlightPrices(); each Hj.UpdateRoomPrices()
+while True:
+    if NewTravelRequest(): packages &lt;- RequestTravelPackage(...)
+        selected &lt;- TA.PresentOptionsToCustomer(packages)
+        if selected: booking &lt;- BookTravel(selected); NotifyCustomer(...)
+    if TimeToUpdatePricing(): UpdateDynamicPricing()</pre>
+<ul>
+<li>Defines flight agent, hotel agent and travel-agency agent; agency compiles packages from the best options.</li>
+<li><b>Cooperation</b> &mdash; all agents work toward booking the itinerary. <b>Coordination</b> &mdash; travel agency needs both flight &amp; hotel agents' input.</li>
+<li>Each airline/hotel agent <b>independently updates its pricing</b>; main loop handles requests and periodic price updates.</li>
+<li>Still <b>not intelligent</b>: needs discrete input (departure/arrival codes) and can't understand text.</li>
+</ul>
+
+<h2>4. Enabling Tool Use in Agents</h2>
+<div class="def"><span class="t">Tool usage</span>The LLM agent's capability to leverage <b>external resources/instrumentation</b> to augment its inherent functionality and decision-making &mdash; going beyond an isolated entity that relies only on training data and internal algorithms.</div>
+<figure><img src="../assets/u2_fig5-1.png"><figcaption>Figure 5.1 &mdash; Agent in isolation ("??") vs. agent with a weather lookup tool ("60&deg;F with chances of rain")</figcaption></figure>
+<ul>
+<li>Without a tool the model may <b>make up an answer</b> or say it doesn't know the weather (training data has no real-time data); with a real-time tool it answers accurately.</li>
+<li>Tools give <b>real-time data, specialised tasks, complex workflow management</b>, broadening competencies to tackle real-world problems; agents <b>offload</b> tasks/obtain supplementary data and functions.</li>
+</ul>
+
+<h3>4.1 Tool calling vs function calling</h3>
+<table>
+<tr><th>Function calling</th><th>Tool calling</th></tr>
+<tr><td>LLM generates structured calls to <b>predefined functions within the same runtime</b>; internal tasks (DB lookup, calculation). E.g., fetch a user's profile from a local database.</td><td>LLM interacts with <b>external APIs, services or systems</b> for real-time data / specialised tasks. E.g., query a weather API for live updates.</td></tr>
+</table>
+<div class="key"><span class="t">The LLM does NOT execute code</span>It generates a <b>structured response</b> stating (1) which tool/function, (2) which parameters, (3) how they must be formatted &mdash; like a "detailed instruction" or <b>dispatcher</b>. Actual execution is done by an external runtime / <b>Agent Controller</b>.</div>
+<pre>{ "function": "weather_lookup",
+  "parameters": { "location": "Boston", "date": "10/01/2024" } }</pre>
+<pre>import requests
+def weather_lookup(location: str, date: str) -> dict:
+    """A function to lookup weather data that takes location and date as input"""
+    API_KEY = "api_key"; base_url = "&lt;api URL&gt;"
+    params = {"q": location, "appid": API_KEY, "units": "imperial"}  # Fahrenheit
+    response = requests.get(base_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        return data</pre>
+<figure><img src="../assets/u2_fig5-2.png"><figcaption>Figure 5.2 &mdash; LLM agent tool calling and execution by the Agent Controller</figcaption></figure>
+<p><b>Flow (Fig 5.2):</b> (1) user asks "What's the weather?" &rarr; agent (1.1) decides to <b>call weather_tool</b> (2) &rarr; Agent Controller (3) <b>looks up</b> the tool &rarr; (4) weather data returned &rarr; (5) data goes to the agent &rarr; (6) agent forms the answer ("60&deg;F with chances of rain") &rarr; (7) reply to the user.</p>
+<ul>
+<li>At minimum the agent needs the tool's <b>description</b> and <b>expected inputs</b>; mark parameters <b>mandatory vs optional</b>.</li>
+<li>Not all LLMs are equally accurate at tool calling. Larger models trained explicitly for it: <b>GPT-4/4o, Claude (Sonnet, Haiku, Opus), Llama 3</b>; others may work with aggressive prompt engineering.</li>
+</ul>
+
+<h3>4.2 Defining tools for agents</h3>
+<table>
+<tr><th>Framework approach &mdash; docstrings</th><th>Direct LLM integration &mdash; JSON schema</th></tr>
+<tr><td>CrewAI / LangGraph: tools are functions with a <b>docstring</b> (purpose, required &amp; optional arguments, return values). Intuitive; standard programming practice (other languages use different doc conventions).</td><td>With raw APIs (Anthropic Claude / OpenAI GPT) define tools as JSON with <b>name, description, input_schema</b> (type, properties, required). Multiple tools = list/array of schemas. Model-dependent &mdash; cumbersome with many models, hence the rise of CrewAI, LangGraph, AutoGen for model-agnostic definition.</td></tr>
+</table>
+<pre>def weather_lookup(location: str, date: str = None):
+    """
+    A tool that can lookup real-time weather data.
+    Arguments:
+      location (str): The location to lookup weather for
+      date (str) Optional: The date in MM/DD/YYYY format
+    """</pre>
+<pre>{ "name": "weather_lookup",
+  "description": "A tool that can lookup real-time weather data",
+  "input_schema": { "type": "object",
+     "properties": { "location": { "type": "string",
+                     "description": "The city and state, e.g. San Francisco, CA" } },
+     "required": ["location"] } }</pre>
+
+<h3>4.3 Types of tools</h3>
+<table>
+<tr><th>Tool type</th><th>Purpose / examples</th></tr>
+<tr><td><b>APIs</b></td><td>Primary gateway to external services &amp; real-time data; standardised interaction with third-party systems &mdash; weather, payments, navigation/maps, flight &amp; hotel booking.</td></tr>
+<tr><td><b>Database tools</b></td><td>Store/retrieve/manage structured or semi-structured data; read &amp; write; persistent info across sessions &mdash; customer profiles, transaction history, product catalogs, domain knowledge bases.</td></tr>
+<tr><td><b>Utility functions</b></td><td>Custom local software components for specialised tasks &mdash; data processing/analysis, format conversion, maths, NLP; consistent, repeatable operations.</td></tr>
+<tr><td><b>Integration tools</b></td><td>Connect systems &amp; services for workflow automation &mdash; calendar sync, document processing, file management, communication systems; orchestrate multi-system workflows.</td></tr>
+<tr><td><b>Hardware interface tools</b></td><td>Bridge digital and physical worlds &mdash; IoT devices, robotics, sensor data, physical automation.</td></tr>
+</table>
+
+<h3>4.4 Key considerations when agents use tools</h3>
+<ul>
+<li><b>Tool composition &amp; chaining</b> &mdash; combine tools into workflows (API flight check &rarr; DB preferences &rarr; utility itinerary calculation).</li>
+<li><b>Tool selection &amp; decision-making</b> &mdash; evaluate context, capabilities, reliability, performance, cost; choose the most efficient when several apply.</li>
+<li><b>Error handling &amp; fallbacks</b> &mdash; detect failed API calls, DB connection issues, wrong outputs; fall back to alternative tools/approaches.</li>
+<li><b>Tool state management</b> &mdash; initialisation/cleanup, DB connections, API auth tokens, session states.</li>
+<li><b>Tool updates &amp; versioning</b> &mdash; version compatibility, deprecated features, new interfaces.</li>
+<li><b>Tool security &amp; access control</b> &mdash; authentication credentials, authorisation checks, secure channels, <b>rate limits and quotas</b>.</li>
+</ul>
+
+<h3>4.5 CrewAI example &mdash; tool use for travel</h3>
+<div class="ex"><span class="t">User request</span>"I need flight and hotel options for Rome for 2 adults, June 15&ndash;22, 2024, with a total budget of $3,000."</div>
+<pre>class TravelTools:
+    def search_flights(self, ...) -> dict:
+        """Basic flight search simulation"""
+        return {"flights": [{"airline": "Alitalian airlines", "price": 800, "duration": "9h"}]}
+    def check_hotels(self, ...) -> dict:
+        """Basic hotel search simulation"""
+        return {"hotels": [{"name": "Roma Inn", "price": 150, "rating": 4.0}]}
+
+travel_agent = Agent(role='Travel Agent',
+    goal='Find suitable flight and hotel options within budget',
+    tools=[TravelTools().search_flights, TravelTools().check_hotels])
+search_task = Task(description="Find flights and hotels for 2 adults to Rome, June 15-22, budget $3000",
+                   agent=travel_agent)
+crew = Crew(agents=[travel_agent], tasks=[search_task])
+result = crew.kickoff()</pre>
+<p><b>Concepts shown:</b> tool definition (TravelTools class), agent configuration (role, goal, tools), task specification, tool integration (flight + hotel), execution flow managed by CrewAI. Real implementations would use real APIs/databases and richer data.</p>
+
+<h3>4.6 Significance of tools in agentic systems</h3>
+<ul>
+<li>Complex problems need a <b>diverse array of specialised tools</b>; instead of encapsulating all knowledge in the agent, <b>leverage appropriate tools as needed</b> &mdash; more efficient &amp; scalable.</li>
+<li><b>Healthcare example:</b> medical databases, clinical decision-support systems, diagnostic algorithms + agent reasoning &rarr; accurate, tailored guidance.</li>
+<li>Not limited to software: robotic agents use <b>physical tools/machinery</b> (assembly, quality inspection, material handling).</li>
+<li><b>Virtual travel agent:</b> airline/hotel/car-rental/review APIs + travel-advisory databases &rarr; personalised recommendations, trade-offs and bookings.</li>
+<li>Effective tool use is a hallmark of truly intelligent agents.</li>
+</ul>
+
+<h2>5. Planning Algorithms for Agents &mdash; Overview</h2>
+<p>Planning lets agents reason about actions and devise strategies. An <b>algorithm</b> = step-by-step, unambiguous, finite instructions that take inputs and produce an expected output in finite time. For LLM agents, practicality depends on handling <b>natural language, uncertainty and large state spaces</b> (all possible conversation states, knowledge contexts and responses &mdash; far larger than e.g. robot positions/orientations).</p>
+<table>
+<tr><th>Practicality for LLM agents</th><th>Algorithms</th></tr>
+<tr><td><b>Less practical</b></td><td>STRIPS, A*, GraphPlan, MCTS &mdash; rigid structure, difficulty with natural language</td></tr>
+<tr><td><b>Moderately practical</b></td><td>Fast Forward (FF) &mdash; needs significant adaptation</td></tr>
+<tr><td><b>Most practical</b></td><td>LLM-based planning and HTN (hierarchical task network) &mdash; align with how LMs process/decompose tasks <i>(covered in Unit 3)</i></td></tr>
+</table>
+<h3>5.1 Less practical algorithms</h3>
+<table>
+<tr><th>Algorithm</th><th>Idea</th><th>Why impractical for LLM agents</th></tr>
+<tr><td><b>STRIPS</b> (Stanford Research Institute Problem Solver)</td><td>States and actions defined by <b>logical predicates</b>; clear binary (true/false) conditions.</td><td>Natural language can't be reduced to true/false; can't model nuanced states ("partially understanding a concept", "somewhat satisfied") &mdash; too rigid.</td></tr>
+<tr><td><b>A* planning</b></td><td>Pathfinding using action cost + heuristic estimate of remaining cost.</td><td>Defining costs/"distance" between conversation states is highly problematic; mathematical requirements don't fit language.</td></tr>
+<tr><td><b>GraphPlan</b></td><td>Builds a <b>layered graph</b> of actions &amp; effects per time step.</td><td>Language interactions don't fit discrete layers with clear cause-effect; combinatorial explosion; hard to find mutual-exclusion relationships &rarr; computationally intractable.</td></tr>
+<tr><td><b>MCTS</b> (Monte Carlo Tree Search)</td><td>Random simulations &mdash; strong in game-like scenarios.</td><td>Each simulation needs real <b>LLM calls</b> (prohibitively expensive); vast language space makes random sampling inefficient.</td></tr>
+</table>
+<h3>5.2 Moderately practical &mdash; Fast Forward (FF)</h3>
+<p>FF uses <b>heuristic search with a relaxed (simplified) version of the planning problem</b> to guide search. Its goal-oriented approach aligns with LLM task completion, and its relaxed plans approximate complex language tasks; heuristic guidance manages huge search spaces; flexible with partial state descriptions. <b>Challenges:</b> numeric heuristics don't translate to language states; relaxed plans may oversimplify; defining <b>delete effects</b> (what is removed/changed in the conversation state) is hard; state representation needs adaptation. <i>(Full discussion + code in Unit 3.)</i></p>
+
+<h2>6. Q&amp;A (from the chapters)</h2>
+<div class="exam">
+<b>Q1. Key characteristics of intelligent agents?</b> Reactivity, proactiveness, social ability, autonomy, and the ability to learn &amp; adapt.<br>
+<b>Q2. Main architectural patterns?</b> Deliberative (knowledge-based), reactive (behaviour-based), hybrid.<br>
+<b>Q3. Deliberative vs reactive?</b> Deliberative excels at complex reasoning/planning but may lack real-time responsiveness; reactive suits dynamic environments needing rapid response but lacks long-term planning and abstract reasoning.<br>
+<b>Q4. What is a MAS?</b> Multiple intelligent agents interacting, cooperating, coordinating toward collective goals &mdash; autonomy, interaction, adaptability, distributed control, scalability, heterogeneity, decentralised knowledge.<br>
+<b>Q5. Interaction mechanisms?</b> Cooperation (common goal), coordination (interdependencies), negotiation (agreements).<br>
+<b>Q6. MAS domains?</b> Supply chain, traffic control, robotics, environmental monitoring, sensor networks, virtual environments.</div>
+
+<h2>7. Unit Summary</h2>
+<ul class="sum">
+<li>Intelligent agents: reactive, proactive, social, learning, reasoning/planning, autonomous.</li>
+<li>Architectures: <b>deliberative</b> (sense-plan-act, symbolic KB), <b>reactive</b> (stimulus-response), <b>hybrid</b> (reactive + deliberative layers; task decomposition, multiplan selection, external modules, reflection, memory-augmented planning).</li>
+<li>MAS: autonomy, interaction, adaptability, distributed control, scalability, heterogeneity, decentralised knowledge; interactions = cooperation, coordination, negotiation.</li>
+<li>Tools extend LLM agents beyond training data. The LLM only <b>emits a structured call</b>; the <b>Agent Controller executes</b>. Tools defined via docstrings (frameworks) or JSON schema (APIs).</li>
+<li>Tool types: APIs, databases, utility functions, integration tools, hardware interface tools; considerations: chaining, selection, error handling, state, versioning, security.</li>
+<li>Planning algorithms: STRIPS, A*, GraphPlan, MCTS (less practical); FF (moderate); LLM-based &amp; HTN (most practical).</li>
+</ul>
+<div class="exam"><span class="t">Likely exam questions</span>
+1) Compare deliberative, reactive and hybrid architectures with diagrams. 2) Explain MAS characteristics and interaction mechanisms with the travel example. 3) Differentiate tool calling and function calling; show how an Agent Controller executes a tool call. 4) List and explain types of tools and considerations in tool use. 5) Why are STRIPS/A*/GraphPlan/MCTS impractical for LLM agents?</div>
+<div class="foot">Sources: Unit-2 Part-1 (Principles of Agentic Systems, Ch.2) &amp; Unit-2 Part-2 (Enabling Tool Use and Planning in Agents, Ch.5) &mdash; summarised for RVCE study use.</div>
+</body></html>
