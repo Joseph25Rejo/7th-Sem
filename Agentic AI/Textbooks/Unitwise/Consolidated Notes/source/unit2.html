@@ -297,7 +297,7 @@ result = crew.kickoff()</pre>
 <tr><td><b>MCTS</b> (Monte Carlo Tree Search)</td><td>Random simulations &mdash; strong in game-like scenarios.</td><td>Each simulation needs real <b>LLM calls</b> (prohibitively expensive); vast language space makes random sampling inefficient.</td></tr>
 </table>
 <h3>5.2 Moderately practical &mdash; Fast Forward (FF)</h3>
-<p>FF uses <b>heuristic search with a relaxed (simplified) version of the planning problem</b> to guide search. Its goal-oriented approach aligns with LLM task completion, and its relaxed plans approximate complex language tasks; heuristic guidance manages huge search spaces; flexible with partial state descriptions. <b>Challenges:</b> numeric heuristics don't translate to language states; relaxed plans may oversimplify; defining <b>delete effects</b> (what is removed/changed in the conversation state) is hard; state representation needs adaptation. <i>(Full discussion + code in Unit 3.)</i></p>
+<p>FF uses <b>heuristic search with a simplified version of the planning problem</b> to guide its search. Its goal-oriented focus could be adapted for LLM agents, but it needs modifications to handle natural language. Advantages: goal-oriented approach aligns with LLM task completion; relaxed planning gives useful approximations; heuristic guidance manages the huge search space; works with partial state descriptions. Challenges: numeric heuristics don't translate to language states; relaxed plans risk oversimplifying; defining <b>delete effects</b> (what aspects of a conversation state are removed or changed by an action)... <i>(The Unit 2 source ends here mid-sentence; FF continues in Unit 3.)</i></p>
 
 <h2>6. Q&amp;A (from the chapters)</h2>
 <div class="exam">
