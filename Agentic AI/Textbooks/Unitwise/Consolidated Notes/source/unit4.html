@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Agentic AI - Unit 4 Consolidated Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Agentic AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 4 &mdash; Effective Agentic System Design Techniques</h1>
+  <div class="sub">System prompts &amp; instruction formatting &bull; State space &amp; environment modelling &bull; Memory architecture &amp; context management &bull; Sequential vs parallel workflows</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>CWD implementation: system prompts, instruction formatting, interaction patterns</li>
+<li>Chapter 6 summary &amp; Q&amp;A</li>
+<li>Focused system prompts &amp; instructions</li>
+<li>Defining objectives; task specifications</li>
+<li>Contextual awareness</li>
+<li>State space representation</li>
+<li>Environment modelling (static / dynamic)</li>
+<li>Integration &amp; interaction patterns</li>
+<li>Monitoring &amp; adaptation</li>
+<li>Memory architecture: short-term, long-term, episodic</li>
+<li>Context management</li>
+<li>Integration with decision-making</li>
+<li>Sequential &amp; parallel processing; workflow optimisation</li>
+<li>Summary, Q&amp;A</li>
+</ol></div>
+
+<h2>Part A &mdash; Implementing CWD in LLM-Based Systems (end of Chapter 6)</h2>
+<p>In traditional multi-agent systems, behaviours are explicit code; in LLM-based CWD systems they are controlled by <b>prompts and interaction patterns</b>. Three foundations: <b>system prompts, instruction formatting, interaction patterns</b>.</p>
+
+<h3>A1. System prompts and agent behaviour</h3>
+<p>System prompts are the <b>fundamental configuration layer</b>: unlike regular task prompts, they set an agent's <b>persistent traits, boundaries and behavioural frameworks</b> across its operational life cycle. In the travel planner every agent's system prompt must include:</p>
+<ul>
+<li><b>Role definition and scope of responsibilities</b></li>
+<li><b>Constraints and operational boundaries</b></li>
+<li><b>Communication protocols</b> with other agents</li>
+<li><b>Decision-making frameworks</b> specific to the role</li>
+</ul>
+<p>Example: the <b>flight booking worker's</b> prompt has flight search parameters, pricing considerations, airline partnerships; the <b>Coordinator's</b> prompt has high-level planning and oversight. In <b>CrewAI</b>, <b>role</b> (functional boundaries) + <b>backstory</b> (context/expertise, e.g., "former airline revenue management expert...") together form a rich system prompt.</p>
+
+<h3>A2. Instruction formatting</h3>
+<p>Clear, consistent formats give reliable performance and inter-agent communication (instructions are interpreted via NL understanding). Key aspects:</p>
+<table>
+<tr><th>Aspect</th><th>Purpose</th><th>Format example</th></tr>
+<tr><td><b>Input structuring</b></td><td>Standard formats for task assignments/requests &mdash; unambiguous search parameters.</td><td><pre style="margin:0">{ "task_type": "flight_search",
+  "parameters": { "departure": "location",
+                  "destination": "location",
+                  "dates": "date_range" } }</pre></td></tr>
+<tr><td><b>Output templates</b></td><td>Consistent, parseable response structures; quick status identification.</td><td><pre style="margin:0">{ "status": "completed/failed",
+  "result": { "options": [...],
+              "recommendations": [...],
+              "constraints": [...] } }</pre></td></tr>
+<tr><td><b>Communication protocols</b></td><td>Formats for inter-agent messages and status updates: type, sender, recipient, structured content.</td><td><pre style="margin:0">{ "message_type": "update",
+  "sender": "flight_booking_worker",
+  "recipient": "coordinator",
+  "content": { "progress": "in_progress",
+               "completion": "60%",
+               "pending_tasks": [...] } }</pre></td></tr>
+</table>
+
+<h3>A3. Interaction patterns</h3>
+<ul>
+<li><b>Message-passing protocols</b> &mdash; structured agent-to-agent formats; clear handoff procedures between processing stages; error handling &amp; recovery.</li>
+<li><b>State management</b> &mdash; awareness of current task status; tracking progress through multi-step processes; coordinating parallel activities.</li>
+<li><b>Feedback loops</b> &mdash; communicating success/failure; requesting clarification/more information; continuous improvement via interaction history.</li>
+</ul>
+
+<h3>A4. Chapter 6 summary &amp; Q&amp;A</h3>
+<p>CWD adapts early role-based research to LLM agents: well-defined roles, specialised workers under coordinator oversight, delegators managing distribution, effective communication/collaboration patterns, and implementation details (system prompts, instruction formatting) for operational success.</p>
+<div class="exam">
+<b>1. How does CWD enhance efficiency?</b> Clear hierarchy &mdash; coordinator oversight, delegator distribution, specialised workers; enables <b>parallel processing</b> (core travel workers do bookings while analysis workers process data/search opportunities).<br>
+<b>2. Role &amp; backstory significance?</b> Role = functional boundaries; backstory = context/expertise shaping decisions; together form the system prompt (e.g., aviation booking specialist + "former airline revenue management expert").<br>
+<b>3. Core travel workers vs analysis &amp; intelligence workers?</b> Core: practical bookings/arrangements (flight, hotel, activity, transport). Analysis: data analyst, experience reflector, opportunity searcher &mdash; trends, feedback, new opportunities. Core executes immediate tasks; analysis improves decision-making and future performance.<br>
+<b>4. Communication &amp; collaboration aspects?</b> Standard protocols (FIPA ACL), coordination mechanisms, negotiation/conflict resolution, knowledge sharing.<br>
+<b>5. Instruction formatting?</b> Structured input/output ensures unambiguous communication, clear task specifications, parseable results.</div>
+
+<div style="page-break-before: always"></div>
+<div class="cover" style="margin-top:0">
+  <div class="tag">Chapter 7</div>
+  <h1 style="font-size:20pt">Effective Agentic System Design Techniques</h1>
+  <div class="sub">Four sections: focused prompts &bull; state spaces &amp; environment modelling &bull; memory &amp; context &bull; sequential &amp; parallel workflows</div>
+</div>
+
+<h2>Part B1 &mdash; Focused System Prompts and Instructions for Agents</h2>
+<p>Focused instruction directs the agent: it lays down the <b>objective, constraints and operating context</b>; clarity and explicitness strongly influence performance.</p>
+<h3>B1.1 Defining objectives</h3>
+<p>Well-defined objectives are the foundation of intended functions/behaviours. Travel agent in customer service: <b>"maximise customer satisfaction by providing personalised travel solutions and resolving queries/issues effectively"</b>, with components:</p>
+<ul>
+<li><b>Personalisation</b> &mdash; tailor to preferences, budgets, requirements; gather travel goals, interests, constraints.</li>
+<li><b>Problem-solving</b> &mdash; handle queries/issues: booking conflicts, travel advisories, alternatives for disruptions.</li>
+<li><b>Effective communication</b> &mdash; clear explanations of solutions/trade-offs; active listening; accurate interpretation of feedback.</li>
+<li><b>Continuous improvement</b> &mdash; monitor satisfaction and feedback; refine capabilities; adapt to trends.</li>
+</ul>
+<p><b>Metrics:</b> customer satisfaction ratings, successful resolution of queries/issues, quality of personalised plans. Objectives guide prioritisation within <b>budget, time, logistical constraints</b>.</p>
+<div class="ex"><span class="t">Sample system prompt</span>
+<b>Objective:</b> Act as an expert travel agent to provide personalised travel solutions while maximising customer satisfaction.<br>
+<b>Core functions:</b> gather &amp; analyse preferences/constraints/budget; create personalised recommendations &amp; itineraries; resolve travel issues &amp; provide alternatives; communicate clearly and professionally; monitor satisfaction and adapt.<br>
+<b>Constraints:</b> stay within budget; prioritise customer safety; follow travel regulations; respect booking deadlines.<br>
+<b>Behaviour:</b> clear professional language; show empathy &amp; patience; anticipate needs; transparent pricing; present options with pros/cons; document key requirements and deadlines.</div>
+
+<h3>B1.2 Task specifications</h3>
+<p>Detail <b>steps, expected outputs and potential challenges</b> so the agent knows its duties.</p>
+<table>
+<tr><th>Task</th><th>Steps</th><th>Expected outputs</th><th>Potential challenges</th></tr>
+<tr><td><b>Customer interaction &amp; inquiry handling</b></td><td>I. Greet; II. gather info (preferences, budget, dates); III. identify nature of inquiry; IV. provide responses/solutions; V. confirm satisfaction.</td><td>Clear concise responses; personalised recommendations/itineraries; booking confirmations/updates.</td><td>Ambiguous/incomplete requests; language barriers; conflicting preferences/constraints; emotional or dissatisfied customers.</td></tr>
+<tr><td><b>Flight &amp; accommodation booking</b></td><td>Search flights/accommodation by preferences; compare (price, duration, amenities, ratings); present top choices; confirm and book.</td><td>Confirmed flight/hotel bookings; itinerary with travel details; invoices/receipts.</td><td>Limited availability; fluctuating prices; changes/cancellations; groups/special accommodations.</td></tr>
+</table>
+<div class="def"><span class="t">Sample task spec &mdash; flight inquiry</span>
+<b>1. Initial query:</b> capture departure/arrival, preferred dates &amp; time ranges, special requirements (class, layovers, airlines), confirm budget.<br>
+<b>2. Search process:</b> search matching flights; filter by price &amp; preferences; sort by best match (price/duration/stops); check seat availability.<br>
+<b>3. Presentation:</b> show top three options; display price, duration, layovers; highlight unique features/restrictions; note cancellation policies.<br>
+<b>Outputs:</b> flight comparison summary, booking confirmation, travel advisory notices.</div>
+
+<h3>B1.3 Contextual awareness</h3>
+<p>The backbone of intelligent behaviour: understanding environment, user needs and situational nuances; maintaining <b>global and local contexts</b> (international restrictions, seasonal weather, hotel policies, local transport).</p>
+<figure><img src="../assets/u4_fig7-1.png"><figcaption>Figure 7.1 &mdash; Contextual awareness: user input &rarr; global / real-time situational / local context awareness &rarr; decision-making &amp; recommendation &rarr; final user interaction &amp; output</figcaption></figure>
+<ul>
+<li><b>Destination intelligence</b> &mdash; peak seasons, local events, cultural significance (Japan: cherry-blossom season, festivals, regional weather &rarr; optimal dates).</li>
+<li><b>Dynamic adaptation</b> &mdash; real-time adjustment (flight cancelled by weather &rarr; assess alternative routes, impact on later bookings, propose solutions).</li>
+<li><b>Cultural competence</b> &mdash; dress codes at religious sites, dietary-friendly restaurants, local customs.</li>
+</ul>
+<p>It goes beyond pattern matching: it transforms standard service into curated experiences.</p>
+
+<h2>Part B2 &mdash; State Spaces and Environment Modelling</h2>
+<h3>B2.1 State space representation</h3>
+<p>Defines how an agent maintains and updates its understanding of the <b>current situation, available actions and potential outcomes</b>; track relevant information while avoiding complexity. Travel agent state space:</p>
+<table>
+<tr><th>Customer profile state</th><th>Travel context state</th><th>Booking state</th></tr>
+<tr><td>Personal preferences &amp; constraints<br>Travel history &amp; feedback<br>Current interaction context<br>Budget parameters &amp; flexibility<br>Special requirements</td><td>Flight options &amp; pricing<br>Hotel availability &amp; rates<br>Weather &amp; forecasts<br>Travel advisories &amp; restrictions<br>Seasonal events &amp; peak periods</td><td>Reservation status &amp; confirmations<br>Payment info &amp; status<br>Cancellation policies &amp; deadlines<br>Itinerary modifications<br>Connection dependencies</td></tr>
+</table>
+<p>The state space should capture both <b>static and dynamic elements</b> efficiently. Example JSON state:</p>
+<pre>{ "booking_id": "BK123456", "status": "confirmed",
+  "components": {
+    "flights": [{ "status": "confirmed", "departure": "2024-05-15T10:00:00",
+                  "cancellation_deadline": "2024-05-01", "dependencies": ["hotel_check_in"] }],
+    "hotels":  [{ "status": "pending", "check_in": "2024-05-15", "cancellation_policy": "48h_notice" }] },
+  "customer_preferences": { "seat_type": "window", "meal_requirements": "vegetarian",
+                            "room_preferences": ["high_floor", "non_smoking"] } }</pre>
+<p>States are "moment-in-time" knowledge about a task; the <b>environment</b> is the larger context (tools available, policies/rules, use-case details).</p>
+
+<h3>B2.2 Environment modelling</h3>
+<p>A detailed representation of the world in which the agent operates. Three fundamental questions: <b>(1)</b> What systems/services can the agent interact with? <b>(2)</b> What rules and constraints govern the interactions? <b>(3)</b> What changing conditions must it monitor and respond to?</p>
+<p>Travel agent: connections to airline booking systems, hotel reservation platforms, payment processors; business rules; awareness of price changes and availability. A good model enables: informed decisions on current conditions, navigating complex systems, responding to changes, maintaining compliance, optimising within constraints.</p>
+<table>
+<tr><th>Static environment elements (rarely change)</th><th>Dynamic environment elements (need real-time monitoring)</th></tr>
+<tr><td><b>Business rules &amp; constraints:</b> booking policies &amp; procedures; payment processing requirements; cancellation/modification rules; service level agreements; regulatory compliance.<br><b>System interfaces:</b> API endpoints &amp; specifications; database schemas &amp; relationships; authentication mechanisms; error-handling protocols; rate limits &amp; quotas.</td>
+<td><b>Resource availability:</b> real-time inventory; pricing fluctuations; service disruptions; weather; local events.<br><b>System performance:</b> response times &amp; latency; error rates &amp; failures; resource utilisation; queue lengths &amp; processing times; system health indicators.</td></tr>
+</table>
+<div class="key"><span class="t">Design caution</span>Too many integration points create an overly complex system. Mitigate with <b>multiple purpose-built agents</b> that each do one or two tasks well and coordinate (sequential/parallel workflows).</div>
+
+<h3>B2.3 Integration and interaction patterns</h3>
+<h4>(1) Event-driven updates</h4>
+<p>Agent responds dynamically to environment changes; instead of constant <b>polling</b> it receives and processes <b>events</b> as they occur (airline updates flight status, hotel room becomes unavailable &rarr; immediate state updates).</p>
+<pre>class TravelAgentState:
+    def update_booking_status(self, event):
+        if event.type == "FLIGHT_CHANGE":
+            self.check_dependencies()
+            self.notify_customer()
+        elif event.type == "WEATHER_ALERT":
+            self.evaluate_alternatives()
+            self.update_recommendations()</pre>
+<ul>
+<li><b>Flight change (10 AM &rarr; 2 PM):</b> system receives <code>FLIGHT_CHANGE</code> &rarr; method processes it &rarr; checks effect on hotel bookings/transfers &rarr; notifies customer automatically.</li>
+<li><b>Weather alert:</b> receives <code>WEATHER_ALERT</code> &rarr; evaluates impact on travel &rarr; finds alternative dates/destinations &rarr; updates recommendations.</li>
+</ul>
+<h4>(2) State validation and consistency</h4>
+<p>Ensures the agent's understanding stays accurate: valid state transitions, maintained dependencies, business rules followed &mdash; a <b>gatekeeper</b> before state changes are applied.</p>
+<pre>def validate_state_transition(current_state, new_state):
+    if not is_valid_transition(current_state, new_state):
+        raise InvalidStateTransition("Invalid transition from {current_state} to {new_state}")
+    check_state_dependencies(new_state)
+    validate_business_rules(new_state)</pre>
+<table>
+<tr><th>Check</th><th>Example</th></tr>
+<tr><td><b>Transition validation</b></td><td>"on hold" &rarr; "confirmed": Is payment received? Seats still available? Price still valid?</td></tr>
+<tr><td><b>Dependency checking</b></td><td>Flight + hotel: hotel check-in after flight arrival; transfer availability matches flight time; room type matches number of travellers.</td></tr>
+<tr><td><b>Business rules</b></td><td>International booking: passport information provided; travel insurance offered; cancellation policy acknowledged.</td></tr>
+</table>
+<p>If any check fails, the state change is blocked and an error raised &rarr; booking integrity maintained.</p>
+
+<h3>B2.4 Monitoring and adaptation</h3>
+<ul>
+<li><b>Monitoring metrics:</b> latency of state updates; accuracy/precision of predictions and decisions; resource-utilisation patterns; error rates &amp; recovery times; <b>customer-satisfaction indicators</b>.</li>
+<li><b>Adaptation strategies:</b> dynamic resource allocation for varying workloads; continuously refine/update models from new data; adjust rules &amp; optimisation parameters (seasonal patterns, preference shifts); performance tuning &amp; scaling; incorporate user feedback.</li>
+</ul>
+<p>Success depends on representing state and environment and adapting: consider static + dynamic elements, robust integration patterns, effective monitoring &mdash; keeping the agent reliable, efficient and responsive as the environment evolves.</p>
+
+<h2>Part B3 &mdash; Agent Memory Architecture and Context Management</h2>
+<p>Memory enables coherent interactions and informed decisions from past experience and current context. Three memory types: <b>short-term, long-term, episodic</b>.</p>
+<table>
+<tr><th>Memory type</th><th>Purpose</th><th>Travel agent example</th></tr>
+<tr><td><b>Short-term (working) memory</b></td><td>Immediate cognitive workspace; temporarily holds info for the current interaction/task; conversation context, multi-step processes, active sessions; cleared when session ends or info becomes irrelevant (efficient resource use).</td><td>Current search criteria, recently viewed options, temporary preferences during the session, booking-process state.</td></tr>
+<tr><td><b>Long-term memory (knowledge base)</b></td><td>Persistent repository across interactions/sessions; accumulated knowledge, learned patterns, customer relationships; consistency and personalisation without repeating preferences.</td><td>Customer preferences over multiple bookings, past travel records, destination knowledge, seasonal patterns, provider relationships.</td></tr>
+<tr><td><b>Episodic memory (interaction history)</b></td><td>Stores specific interactions, events and outcomes as <b>discrete episodes</b> with temporal sequence &amp; context; learn from past experience; pattern recognition on behaviour and outcomes; common in conversational interfaces/chatbots.</td><td>Identify successful booking patterns, common customer journeys; avoid repeat issues (e.g., problem layover times at certain airports).</td></tr>
+</table>
+<h4>Implementation sketches</h4>
+<pre># Short-term memory
+class WorkingMemory:
+    def __init__(self):
+        self.current_interaction = {'customer_id': None, 'session_start': None,
+            'current_query': None, 'active_searches': [], 'temporary_preferences': {}}
+    def update_context(self, new_information):   # update current interaction context
+        self.current_interaction.update(new_information)
+    def clear_session(self):                      # reset temporary session data
+        self.__init__()</pre>
+<pre># Long-term memory
+class CustomerMemory:
+    def __init__(self):
+        self.profiles = {'preferences': {}, 'travel_history': [], 'feedback_history': [],
+                         'special_requirements': {}, 'loyalty_status': None}
+    def update_profile(self, customer_id, new_data):   # merge new info with existing profile
+        self.profiles[customer_id] = {**self.profiles.get(customer_id, {}), **new_data}
+
+class TravelKnowledge:
+    def __init__(self):
+        self.destination_info = {}; self.seasonal_patterns = {}
+        self.service_providers = {}; self.travel_regulations = {}
+    def update_knowledge(self, category, key, value):
+        getattr(self, category)[key] = value</pre>
+<pre># Episodic memory
+class EpisodicMemory:
+    def __init__(self): self.interaction_history = []
+    def record_interaction(self, interaction_data):
+        interaction_data['timestamp'] = datetime.now()
+        self.interaction_history.append(interaction_data)
+    def retrieve_relevant_episodes(self, context):    # similar past interactions
+        return [e for e in self.interaction_history if self._is_relevant(e, context)]</pre>
+
+<h3>B3.1 Context management</h3>
+<div class="ex"><span class="t">Scenario</span>Multi-city business trip to Tokyo &amp; Singapore: corporate policy limits flights to $2,000, preference for morning flights due to meetings, hotels within walking distance of offices &mdash; the agent must track and update all of this while moving between flight searches, hotel availability and meeting schedules.</div>
+<p><b>Context hierarchy</b></p>
+<table>
+<tr><th>Level</th><th>Contents</th></tr>
+<tr><td><b>Global context</b></td><td>System-wide settings &amp; constraints; current operational status; global travel alerts and advisories.</td></tr>
+<tr><td><b>Session context</b></td><td>Current customer-interaction state; active searches/queries; temporary preferences &amp; constraints.</td></tr>
+<tr><td><b>Task context</b></td><td>Specific booking details; current step in multi-step processes; related bookings &amp; dependencies.</td></tr>
+</table>
+<p><b>Context switching</b> &mdash; smooth transition between contexts while preserving coherence:</p>
+<ul>
+<li><b>Context preservation</b>: save current state before switching; maintain history of context changes; ensure no critical information is lost.</li>
+<li><b>Context restoration</b>: retrieve previous contexts; rebuild operational environment; re-establish relevant connections and states.</li>
+<li><b>Context merging</b>: combine information from multiple contexts; resolve conflicts; maintain consistency across changes.</li>
+</ul>
+
+<h3>B3.2 Integration with decision-making</h3>
+<ol>
+<li><b>Information retrieval</b> &mdash; gather/synthesise from memory: customer history &amp; preferences; similar past cases &amp; outcomes; combine current context with history; filter &amp; prioritise.</li>
+<li><b>Pattern recognition</b> &mdash; analyse historical interaction patterns; identify successful booking patterns; recognise potential issues from past experience; detect seasonal trends &amp; preferences.</li>
+<li><b>Decision optimisation</b> &mdash; weighted evaluation of options; multiple constraints; balance customer preferences vs system requirements; risk assessment and mitigation.</li>
+</ol>
+
+<h2>Part B4 &mdash; Sequential and Parallel Processing in Agentic Workflows</h2>
+<h3>B4.1 Sequential processing</h3>
+<p>Tasks handled in a <b>defined order</b>, each step depending on the completion of previous ones. Needed for: (1) <b>Flight &amp; hotel coordination</b> &mdash; confirm flight availability before booking hotels; transfers aligned with arrival times; validate visa requirements before finalising; (2) <b>Payment processing</b> &mdash; verify funds &rarr; process payment &rarr; confirm bookings &rarr; send confirmation documents.</p>
+<figure><img src="../assets/u4_fig7-2.png"><figcaption>Figure 7.2 &mdash; Sequential processing: Start booking &rarr; Check flight availability &rarr; Confirm flight selection &rarr; Check hotel availability &rarr; Confirm hotel selection &rarr; Process payment &rarr; Send confirmation &rarr; Booking complete</figcaption></figure>
+<p><b>Drawback:</b> inefficient when many independent operations could run simultaneously.</p>
+<h3>B4.2 Parallel processing</h3>
+<p>Multiple independent tasks handled <b>simultaneously</b> &rarr; better efficiency and response times. (1) <b>Concurrent searches</b> &mdash; multiple airline systems, different hotel chains, weather forecasts &amp; travel advisories; (2) <b>Background processing</b> &mdash; update customer profiles, process feedback &amp; reviews, monitor price changes, update travel advisories.</p>
+<figure><img src="../assets/u4_fig7-3.png"><figcaption>Figure 7.3 &mdash; Parallel processing: Start search &rarr; (Flight search | Hotel search | Weather check | Travel advisory check) &rarr; Collect results &rarr; Present options</figcaption></figure>
+<table>
+<tr><th>Sequential</th><th>Parallel</th></tr>
+<tr><td>Use when tasks have <b>dependencies</b> (payment &rarr; confirmation)</td><td>Use for <b>independent</b> tasks (multi-vendor searches)</td></tr>
+</table>
+<p>An agent must dynamically switch modes depending on task requirements, system load and time constraints &rarr; <b>workflow optimisation</b>.</p>
+
+<h3>B4.3 Workflow optimisation</h3>
+<figure><img src="../assets/u4_fig7-4.png"><figcaption>Figure 7.4 &mdash; Workflow optimisation with dynamic workflows (task classification &amp; prioritisation, resource management, performance monitoring)</figcaption></figure>
+<ol>
+<li><b>Task classification &amp; prioritisation</b>
+ <ul>
+ <li><i>Dependency analysis:</i> critical-path tasks that must be sequential; map dependencies between booking components; data-flow requirements; temporal constraints &amp; deadlines.</li>
+ <li><i>Priority assignment:</i> urgency/importance; customer SLAs &amp; expectations; impact on overall booking; resource requirements.</li>
+ </ul></li>
+<li><b>Resource management</b>
+ <ul>
+ <li><i>System resources:</i> monitor CPU/memory; balance load across components; <b>throttling</b>; optimise DB connections &amp; caches.</li>
+ <li><i>External services:</i> track API <b>rate limits/quotas</b>; manage concurrent requests; <b>retry strategies</b> for failures; maintain provider priorities.</li>
+ </ul></li>
+<li><b>Dynamic workflow adjustment</b>
+ <ul>
+ <li><i>Load balancing:</i> adjust parallel execution to load; redistribute during peaks; manage queue depths &amp; processing rates; implement <b>backpressure</b>.</li>
+ <li><i>Performance monitoring:</i> task completion times &amp; success rates; identify bottlenecks; measure throughput &amp; latency; monitor resource utilisation.</li>
+ </ul></li>
+</ol>
+<p>Goal: workflows that are efficient, <b>resilient and adaptable</b>.</p>
+<div class="flow">Flow in Fig 7.4: Analyse task &rarr; Dependencies? (Yes: sequential queue / No: parallel queue) &rarr; Check resource availability &rarr; System load OK? (No: queue task / Yes: execute task) &rarr; Monitor execution &rarr; Performance OK? (Yes: task complete / No: adjust resources)</div>
+
+<h2>Chapter 7 Summary and Q&amp;A</h2>
+<ul class="sum">
+<li><b>Focused system prompts</b> (objective, core functions, constraints, behaviour), <b>task specifications</b> (steps, outputs, challenges), <b>contextual awareness</b> (destination intelligence, dynamic adaptation, cultural competence).</li>
+<li><b>State space</b> = moment-in-time view (customer profile, travel context, booking state); <b>environment model</b> = systems, rules, changing conditions (static vs dynamic).</li>
+<li>Integration patterns: <b>event-driven updates</b> and <b>state validation &amp; consistency</b>; monitoring + adaptation.</li>
+<li><b>Memory:</b> short-term (working), long-term (knowledge base), episodic (interaction history); <b>context hierarchy</b> (global/session/task), switching (preservation, restoration, merging).</li>
+<li><b>Workflows:</b> sequential for dependent tasks, parallel for independent tasks; optimisation by classification, resource management, dynamic adjustment. (Next chapter: building trust in generative-AI systems.)</li>
+</ul>
+<div class="exam">
+<b>Q1. Three memory types &amp; importance?</b> Short-term (immediate context, active search parameters, session state), long-term (persistent profiles, regulations, destination info), episodic (interaction episodes enabling learning &amp; pattern recognition) &mdash; maintain context, learn from experience, decide using current + historical info.<br>
+<b>Q2. Sequential vs parallel; when in travel booking?</b> Sequential for dependent steps (flight availability before hotel; payment &rarr; confirmation); parallel for independent tasks (airline searches, hotel availability, weather forecasts at the same time).<br>
+<b>Q3. Context management &amp; levels?</b> Maintains awareness of current situation + history: <b>global, session, task</b> contexts.<br>
+<b>Q4. Environment model vs state space?</b> Environment model = external systems, static rules (policies, interfaces) and dynamic elements (availability, pricing); state space = current situation, available actions, outcomes &mdash; environment gives the broader context in which the state space exists.<br>
+<b>Q5. Factors for sequential vs parallel?</b> Task dependencies, resource availability, time constraints (SLAs), system load, performance requirements (throughput/latency).</div>
+<div class="exam"><span class="t">Likely exam questions</span>
+1) Explain system prompts, instruction formatting (input/output/communication JSON) and interaction patterns. 2) Differentiate state space and environment modelling; static vs dynamic elements. 3) Explain event-driven updates and state validation with code. 4) Describe the three memory types with classes and the context hierarchy. 5) Compare sequential and parallel workflows and explain workflow optimisation.</div>
+<div class="foot">Sources: Unit-4 (end of Ch.6 CWD approach + Ch.7 Effective Agentic System Design Techniques) &mdash; summarised for RVCE study use.</div>
+</body></html>
