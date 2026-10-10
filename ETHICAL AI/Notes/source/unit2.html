@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Ethical AI - Unit 2 Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Ethical AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 2 &mdash; Bias and Fairness</h1>
+  <div class="sub">Bias in data &amp; models &bull; Impact on decision making &bull; Types of bias &bull; Real-world cases &bull; Detecting &amp; mitigating bias &bull; Implementing bias detection and fairness</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Understanding bias in data and models</li>
+<li>How bias impacts decision making</li>
+<li>Types of bias</li>
+<li>Real-world cases</li>
+<li>Techniques to detect bias</li>
+<li>Fairness metrics</li>
+<li>Techniques to mitigate bias</li>
+<li>Implementing bias detection &amp; fairness</li>
+<li>Quick revision &amp; likely questions</li>
+</ol>
+<span style="font-size:8.6pt;color:#475569">Source: Bartneck et al., <i>An Introduction to Ethics in Robotics and AI</i> &mdash; &sect;2.2 (ML &amp; bias), &sect;3.6.2 (bias testing), &sect;4.3.4 (Justice: credit, courts, healthcare). The book treats bias briefly; the taxonomy, metrics, mitigation and code are standard material tagged <span class="plus">+</span>.</span>
+</div>
+
+<h2>1. Understanding Bias in Data and Models</h2>
+<div style="display:flex;gap:14px;align-items:flex-start">
+<figure style="flex:0 0 32%;margin:4px 0"><img src="../UNIT-2/images/fig4.1_justitia.png" style="max-height:58mm"><figcaption>Figure 4.1 &mdash; Justitia: the symbol of justice &mdash; impartial, weighing evidence</figcaption></figure>
+<div style="flex:1">
+<div class="def"><span class="t">Bias &amp; fairness</span><b>Bias</b> = systematic, unfair skew in outcomes for certain people or groups. <b>Fairness</b> = absence of unjustified discrimination. The ethical principle at stake is <b>Justice</b>: AI should act justly and without bias.</div>
+<ul>
+<li><b>Entry point (book &sect;2.2):</b> supervised learning needs <b>human-labelled data</b>, so human and societal biases can be baked in &mdash; a model trained on past decisions <b>reproduces the past</b>.</li>
+</ul></div></div>
+
+<table>
+<tr><th style="width:18%"></th><th>Where it comes from</th></tr>
+<tr><td><b>Data bias</b></td><td>Unrepresentative samples, skewed or prejudiced labels, missing groups, and <b>proxy variables</b> (neighbourhood &harr; race) that leak protected attributes <span class="plus">+</span></td></tr>
+<tr><td><b>Model bias</b></td><td>Poor <b>problem formulation</b> / objective (cost used as proxy for need), algorithm choices, optimising overall accuracy while a minority performs badly <span class="plus">+</span></td></tr>
+</table>
+<div class="warn"><span class="t">Removing the sensitive column is not enough</span>Other features act as <b>proxies</b> ("fairness through unawareness" fails). Blinding algorithms to race can even <i>hurt</i> (Kleinberg et al.), yet data must still reflect "what is the case". Trade-offs between fairness and accuracy must be made consciously.</div>
+
+<h2>2. How Bias Impacts the Decision-Making Process</h2>
+<div class="diagram">
+<svg viewBox="0 0 700 128" width="700" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6d28d9"/></marker></defs>
+  <g font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="4" y="12" width="118" height="44" rx="8" fill="#2563eb"/><text x="63" y="31">Problem</text><text x="63" y="46">formulation</text>
+    <rect x="146" y="12" width="118" height="44" rx="8" fill="#2563eb"/><text x="205" y="31">Data collection</text><text x="205" y="46">&amp; labelling</text>
+    <rect x="288" y="12" width="118" height="44" rx="8" fill="#7c3aed"/><text x="347" y="39">Training</text>
+    <rect x="430" y="12" width="118" height="44" rx="8" fill="#7c3aed"/><text x="489" y="39">Deployment</text>
+    <rect x="572" y="12" width="124" height="44" rx="8" fill="#dc2626"/><text x="634" y="31">Unfair decisions</text><text x="634" y="46">at scale</text>
+  </g>
+  <g stroke="#6d28d9" stroke-width="2" marker-end="url(#a)"><path d="M122 34 H144"/><path d="M264 34 H286"/><path d="M406 34 H428"/><path d="M548 34 H570"/></g>
+  <g font-size="10" fill="#1b1f2a" text-anchor="middle">
+    <text x="63" y="76">wrong proxy</text><text x="205" y="76">under-representation,</text><text x="205" y="88">historical labels</text><text x="347" y="76">amplifies patterns,</text><text x="347" y="88">favours majority</text><text x="489" y="76">feedback loops,</text><text x="489" y="88">automation bias</text><text x="634" y="76">credit, jobs, health,</text><text x="634" y="88">justice</text>
+  </g>
+  <path d="M489 98 H205 V94" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="4 3" fill="none" marker-end="url(#a)"/>
+  <text x="350" y="120" font-size="10" fill="#dc2626" text-anchor="middle" font-weight="700">feedback loop: biased outputs become tomorrow's training data</text>
+</svg></div>
+<ul>
+<li><b>Consequences:</b> unequal access to credit, jobs, healthcare and justice; <b>loss of trust</b>; violation of <b>justice</b> and <b>non-maleficence</b>; legal and reputational risk; one biased algorithm affects <b>millions</b>.</li>
+<li><b>Automation bias:</b> people over-trust an "objective" score <span class="plus">+</span>. <b>Feedback loops:</b> predictive policing &rarr; more patrols &rarr; more arrests &rarr; "more crime data" <span class="plus">+</span>.</li>
+</ul>
+<div class="exam"><span class="t">Book's discussion question</span><i>We expect AI to be fairer than humans &mdash; are there limits?</i> Yes: it learns from human data, fairness has several <b>conflicting</b> definitions, and precise algorithms struggle with amorphous concepts.</div>
+
+<h2>3. Types of Bias <span class="plus">+</span></h2>
+<table>
+<tr><th style="width:23%">Type</th><th>Meaning</th><th style="width:33%">Example</th></tr>
+<tr><td><b>Historical</b></td><td>The world itself was unequal; data faithfully records it</td><td>Few women in past CEO data &rarr; model prefers men</td></tr>
+<tr><td><b>Representation / sampling</b></td><td>Training sample doesn't reflect the population</td><td>Faces mostly light-skinned &rarr; poor accuracy on dark skin</td></tr>
+<tr><td><b>Measurement / label</b></td><td>Proxy or labels measured inconsistently</td><td>Arrests as proxy for crime; cost as proxy for need</td></tr>
+<tr><td><b>Selection</b></td><td>Non-random inclusion of data</td><td>Survey only of smartphone users</td></tr>
+<tr><td><b>Algorithmic</b></td><td>Model or objective favours some groups</td><td>Optimising overall accuracy; ranking algorithms</td></tr>
+<tr><td><b>Aggregation</b></td><td>One model for groups that differ</td><td>Single medical model for all ethnicities</td></tr>
+<tr><td><b>Confirmation / cognitive</b></td><td>Developers' or users' beliefs shape design and reading of results</td><td>Choosing features that fit expectations</td></tr>
+<tr><td><b>Automation</b></td><td>Over-reliance on algorithmic output</td><td>Judge defers to risk score</td></tr>
+<tr><td><b>Deployment / feedback loop</b></td><td>Used differently than intended, or output changes future data</td><td>Predictive policing</td></tr>
+</table>
+
+<h2>4. Real-World Cases</h2>
+<table>
+<tr><th style="width:18%">Case</th><th>What happened</th><th style="width:30%">Lesson</th></tr>
+<tr><td><b>COMPAS</b><br>(recidivism, Broward County, USA)</td><td>ProPublica (2016): higher false-positive risk scores for Black defendants. Northpointe: scores are predictively fair given different <b>base rates</b>. Accuracy only &asymp;<b>65%</b> (Dressel &amp; Farid). <i>Loomis v. Wisconsin</i>: defence couldn't inspect the proprietary algorithm; appeal failed.</td><td><b>Fairness definitions conflict</b> (Chouldechova 2017: predictive parity &#8869; equal FPR/FNR when base rates differ); need for explainability</td></tr>
+<tr><td><b>Healthcare risk algorithm</b><br>(Obermeyer 2019)</td><td>Race excluded, but <b>healthcare cost</b> used as proxy for need; poor patients spend less (transport, childcare, work demands) &rarr; Black patients under-flagged; affects millions.</td><td><b>Problem formulation</b> is the root cause; proxies encode structural inequality</td></tr>
+<tr><td><b>Credit scoring</b></td><td>Applicant's neighbourhood data &rarr; systematic bias against certain residential areas; faster decisions scale unfairness.</td><td>Proxy variables</td></tr>
+<tr><td><b>Amazon recruiting</b> <span class="plus">+</span></td><td>Trained on ~10 years of mostly male CVs; penalised CVs containing "women's"; scrapped (2018).</td><td>Historical bias</td></tr>
+<tr><td><b>Face recognition</b> <span class="plus">+</span></td><td><i>Gender Shades</i> (Buolamwini &amp; Gebru 2018): far higher error for darker-skinned women.</td><td>Representation bias</td></tr>
+<tr><td><b>Language models / chatbots</b> <span class="plus">+</span></td><td>Learn stereotypes and toxicity from web text (e.g. Microsoft Tay).</td><td>Training-data bias</td></tr>
+</table>
+
+<h2>5. Techniques to Detect Bias</h2>
+<ol>
+<li><b>Audit the data</b> &mdash; group-wise counts, label rates, missing values; correlate features with protected attributes to spot <b>proxies</b>.</li>
+<li><b>Compare outcomes across groups</b> with fairness metrics (Section 6).</li>
+<li><b>Error analysis / slicing</b> &mdash; accuracy, FPR, FNR per subgroup and intersections (race &times; gender) <span class="plus">+</span>.</li>
+<li><b>Explainability</b> &mdash; feature importance, <b>SHAP / LIME</b> to expose proxy reliance <span class="plus">+</span>.</li>
+<li><b>Toolkits and audits (book &sect;3.6.2):</b> IBM <b>AI Fairness 360</b>, <b>audit-AI</b>, Facebook <b>Fairness Flow</b>, third-party audits (O'Neil Risk Consulting &amp; Algorithmic Auditing), IEEE algorithmic-bias standards project (2017). Also Fairlearn and Google What-If Tool <span class="plus">+</span>.</li>
+<li><b>Diverse test cases / red-teaming</b> and <b>continuous monitoring</b> after deployment.</li>
+</ol>
+
+<h2>6. Fairness Metrics <span class="plus">+</span></h2>
+<p style="margin-bottom:2px">G = protected group, &#374; = prediction, Y = ground truth.</p>
+<table>
+<tr><th style="width:24%">Metric</th><th style="width:22%">Requires</th><th>Idea</th></tr>
+<tr><td><b>Statistical (demographic) parity</b></td><td>Equal <b>selection rate</b></td><td>P(&#374;=1 | G=a) = P(&#374;=1 | G=b); report the <b>difference</b></td></tr>
+<tr><td><b>Disparate impact ratio</b></td><td>Ratio &ge; <b>0.8</b> (80% rule)</td><td>selection rate of unprivileged &divide; privileged</td></tr>
+<tr><td><b>Equal opportunity</b></td><td>Equal <b>TPR</b></td><td>Qualified people approved at the same rate in every group</td></tr>
+<tr><td><b>Equalised odds</b></td><td>Equal <b>TPR and FPR</b></td><td>Both error rates equal across groups</td></tr>
+<tr><td><b>Predictive parity</b></td><td>Equal <b>precision</b></td><td>P(Y=1 | &#374;=1, G) same &mdash; COMPAS developers' choice</td></tr>
+<tr><td><b>Calibration</b></td><td>Same risk per score</td><td>P(Y=1 | score=s, G) same for all groups</td></tr>
+<tr><td><b>Individual fairness</b></td><td>Similar &rarr; similar</td><td>Similar individuals receive similar outcomes</td></tr>
+<tr><td><b>Counterfactual fairness</b></td><td>Invariance</td><td>Outcome unchanged if the protected attribute is flipped (causal)</td></tr>
+</table>
+<div class="warn"><span class="t">Metrics cannot all hold at once</span>Unless base rates are equal or the classifier is perfect, you cannot satisfy them all (the COMPAS dispute). Choose the metric that fits the context and the harm.</div>
+
+<h2>7. Techniques to Mitigate Bias <span class="plus">+</span></h2>
+<div class="diagram">
+<svg viewBox="0 0 700 110" width="700" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6d28d9"/></marker></defs>
+  <g font-size="12" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="4" y="10" width="110" height="40" rx="8" fill="#64748b"/><text x="59" y="34">Data</text>
+    <rect x="196" y="10" width="130" height="40" rx="8" fill="#64748b"/><text x="261" y="34">Model training</text>
+    <rect x="408" y="10" width="110" height="40" rx="8" fill="#64748b"/><text x="463" y="34">Predictions</text>
+    <rect x="590" y="10" width="106" height="40" rx="8" fill="#16a34a"/><text x="643" y="34">Fair output</text>
+  </g>
+  <g stroke="#6d28d9" stroke-width="2" marker-end="url(#b)"><path d="M114 30 H194"/><path d="M326 30 H406"/><path d="M518 30 H588"/></g>
+  <g font-size="11" font-weight="700" fill="#5b21b6" text-anchor="middle">
+    <text x="70" y="76">PRE-processing</text><text x="261" y="76">IN-processing</text><text x="463" y="76">POST-processing</text>
+  </g>
+  <g font-size="9.6" fill="#1b1f2a" text-anchor="middle">
+    <text x="70" y="90">re-sample &middot; reweigh</text><text x="261" y="90">constraints &middot; adversarial</text><text x="463" y="90">group thresholds &middot; reject option</text>
+  </g>
+</svg></div>
+<table>
+<tr><th style="width:17%">Stage</th><th>Technique</th><th style="width:25%">Pros / cons</th></tr>
+<tr><td><b>Pre-processing</b><br>(fix the data)</td><td>More / representative data; <b>re-sampling</b>; <b>reweighing</b> (weight each group&times;label cell so group &#8869; label: <i>w = P(g)&middot;P(y) / P(g,y)</i>); remove or transform proxies; disparate-impact remover</td><td>Model-agnostic, cheap; may not remove proxy bias fully</td></tr>
+<tr><td><b>In-processing</b><br>(fix the learning)</td><td>Add <b>fairness constraints / regulariser</b> to the loss; <b>adversarial debiasing</b> (adversary tries to predict group from output); fair representation learning</td><td>Directly trades fairness vs accuracy; needs custom training</td></tr>
+<tr><td><b>Post-processing</b><br>(fix the output)</td><td><b>Group-specific thresholds</b>; equalised-odds post-processing; <b>reject-option</b> classification (relabel near-boundary cases)</td><td>Works on black-box models; can be legally sensitive</td></tr>
+</table>
+<div class="def"><span class="t">Non-technical measures</span>Diverse development teams &bull; fairness requirements agreed with stakeholders &bull; <b>datasheets for datasets</b> and <b>model cards</b> &bull; <b>human-in-the-loop</b> review &bull; appeal and redress mechanisms &bull; regular <b>audits</b> &bull; legal compliance (GDPR, anti-discrimination law) &bull; honest handling of the <b>fairness &harr; accuracy</b> trade-off.</div>
+
+<h2>8. Implementing Bias Detection and Fairness</h2>
+<p>Runnable code: <code>UNIT-2/bias_detection_demo.py</code> (numpy + pandas + scikit-learn). Synthetic loan data: <b>group B was historically penalised</b>; <code>zip_score</code> is a <b>proxy</b> for group; the protected attribute itself is <i>not</i> a model feature.</p>
+<div class="flow">Train baseline &rarr; Measure per-group metrics &rarr; Mitigate (pre / post) &rarr; Re-measure</div>
+<pre><code># 1. Detect: per-group selection rate, TPR, FPR  (y_true = truly qualified)
+sel_rate_B = y_pred[g == "B"].mean();   sel_rate_A = y_pred[g == "A"].mean()
+disparate_impact = sel_rate_B / sel_rate_A            # &lt; 0.8 fails the 80% rule
+tpr = y_pred[(g == grp) &amp; (y_true == 1)].mean()       # equal-opportunity check
+
+# 2. Mitigate (pre-processing): reweighing  w(g, y) = P(g) * P(y) / P(g, y)
+model.fit(X_tr, y_tr, sample_weight=w)
+
+# 3. Mitigate (post-processing): group-specific threshold equalises selection rate
+thr_B = np.quantile(p_B, 1 - selection_rate_A)</code></pre>
+
+<div class="diagram">
+<svg viewBox="0 0 700 190" width="640" xmlns="http://www.w3.org/2000/svg">
+  <text x="350" y="16" font-size="13" font-weight="700" fill="#1e3a8a" text-anchor="middle">Demo result &mdash; disparate impact ratio (B &divide; A); 0.8 = legal 80% rule</text>
+  <line x1="150" y1="30" x2="150" y2="160" stroke="#94a3b8"/>
+  <line x1="150" y1="30" x2="150" y2="160" stroke="#94a3b8"/>
+  <!-- scale: 1.0 = 480px -> x0=150 -->
+  <rect x="150" y="38" width="210" height="30" rx="4" fill="#dc2626"/><text x="144" y="58" font-size="11.5" text-anchor="end" font-weight="700">Baseline</text><text x="366" y="58" font-size="12" font-weight="700">0.44 &#10007;</text>
+  <rect x="150" y="82" width="284" height="30" rx="4" fill="#f59e0b"/><text x="144" y="102" font-size="11.5" text-anchor="end" font-weight="700">+ Reweighing (pre)</text><text x="440" y="102" font-size="12" font-weight="700">0.59 &#10007;</text>
+  <rect x="150" y="126" width="480" height="30" rx="4" fill="#16a34a"/><text x="144" y="146" font-size="11.5" text-anchor="end" font-weight="700">+ Thresholds (post)</text><text x="636" y="146" font-size="12" font-weight="700" text-anchor="start" dx="-52" fill="#fff">1.00 &#10003;</text>
+  <line x1="534" y1="30" x2="534" y2="162" stroke="#1e3a8a" stroke-width="1.6" stroke-dasharray="5 4"/><text x="534" y="178" font-size="10.5" fill="#1e3a8a" text-anchor="middle">0.8 threshold</text>
+</svg></div>
+<table class="keep">
+<tr><th>Model</th><th>Selection rate A / B</th><th>Disparate impact (B/A)</th><th>TPR gap (B&minus;A)</th><th>FPR of B</th></tr>
+<tr><td><b>Baseline</b></td><td>0.364 / 0.159</td><td><b>0.44</b> &#10007;</td><td>&minus;0.45</td><td>0.000</td></tr>
+<tr><td><b>+ Reweighing (pre)</b></td><td>0.331 / 0.197</td><td>0.59 &#10007;</td><td>&minus;0.30</td><td>0.000</td></tr>
+<tr><td><b>+ Thresholds (post)</b></td><td>0.364 / 0.364</td><td><b>1.00</b> &#10003;</td><td>+0.03</td><td>0.044</td></tr>
+</table>
+<div class="key"><span class="t">Takeaways</span>Dropping the protected column does <b>not</b> remove bias (the proxy leaks it); reweighing helps only partly; post-processing equalises outcomes but at a cost (FPR for B rose 0 &rarr; 0.044). Always report <b>several metrics plus accuracy</b>.</div>
+<p><b>Library route</b> (production): <code>pip install fairlearn aif360</code>.</p>
+<pre><code>from aif360.algorithms.preprocessing import Reweighing          # IBM AI Fairness 360
+from aif360.metrics import BinaryLabelDatasetMetric
+from fairlearn.metrics import MetricFrame, demographic_parity_difference
+from fairlearn.reductions import ExponentiatedGradient, DemographicParity</code></pre>
+
+<h2>9. Quick Revision &amp; Likely Questions</h2>
+<div class="key sum"><span class="t">One-liners</span>
+<ul>
+<li><b>Bias</b> = systematic unfairness; enters via <b>data</b> (historical, sampling, labels, proxies) and <b>model / objective</b>. Removing the protected attribute &ne; fair.</li>
+<li><b>Impact:</b> unequal decisions in credit, hiring, health, justice at scale &rarr; loss of trust, legal and reputational risk.</li>
+<li><b>Cases:</b> COMPAS (conflicting definitions, 65% accuracy, <i>Loomis</i>) &bull; healthcare cost proxy (Obermeyer) &bull; credit / neighbourhood &bull; Amazon hiring &bull; Gender Shades.</li>
+<li><b>Detect:</b> data audit &bull; parity / disparate impact (80%) / equal opportunity / equalised odds / predictive parity &bull; subgroup errors &bull; AIF360, Fairlearn, audits.</li>
+<li><b>Mitigate:</b> <b>pre</b> (re-sample, reweigh) &bull; <b>in</b> (constraints, adversarial) &bull; <b>post</b> (thresholds, reject option) + diverse teams, documentation, oversight.</li>
+<li>Fairness metrics <b>conflict</b> &rarr; context decides; the fairness&ndash;accuracy trade-off is a stakeholder decision.</li>
+</ul></div>
+<div class="exam"><span class="t">Likely questions</span>
+<ol>
+<li>Define bias; how can it arise in data and in models? (5)</li>
+<li>Explain how bias affects decision making using two real-world cases. (8)</li>
+<li>List and explain the types of bias with examples. (8)</li>
+<li>Describe the COMPAS controversy; why can't predictive parity and equal error rates coexist? (8)</li>
+<li>Compare pre-, in- and post-processing mitigation techniques. (10)</li>
+<li>Define statistical parity, disparate impact and equal opportunity; compute them from a confusion matrix. (6)</li>
+<li>Describe/implement a procedure to detect and mitigate bias in a classifier. (10)</li>
+</ol></div>
+
+<div class="foot">Ethical AI &middot; Unit 2 Consolidated Notes &middot; built from Bartneck et al., <i>An Introduction to Ethics in Robotics and AI</i></div>
+</body></html>

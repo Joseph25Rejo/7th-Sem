@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Ethical AI - Unit 1 Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Ethical AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 1 &mdash; Introduction to AI &amp; Ethics, and Core Ethical Principles</h1>
+  <div class="sub">Strong &amp; weak AI &bull; Descriptive / Normative / Meta ethics &bull; Ethics &amp; law &bull; Machine ethics &bull; Moral diversity &amp; testing &bull; Bias &amp; fairness, transparency &amp; explainability, privacy &amp; security, robustness &amp; reliability</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>What is AI? (definitions, ML, robots)</li>
+<li>Strong vs weak AI &amp; types of AI systems</li>
+<li>Types of ethics</li>
+<li>Relationship between ethics and law</li>
+<li>Machine ethics &amp; examples</li>
+<li>Moral diversity and testing</li>
+<li>Trust &mdash; the foundation of core principles</li>
+<li>The five AI4People principles</li>
+<li>Bias and fairness</li>
+<li>Transparency and explainability</li>
+<li>Privacy and security</li>
+<li>Robustness and reliability</li>
+<li>Quick revision &amp; likely questions</li>
+</ol>
+<span style="font-size:8.6pt;color:#475569">Source: Bartneck, L&uuml;tge, Wagner, Welsh &mdash; <i>An Introduction to Ethics in Robotics and AI</i> (Springer, 2021), Ch. 2&ndash;4. Items tagged <span class="plus">+</span> are short additions beyond the textbook for syllabus topics the book treats lightly.</span>
+</div>
+
+<h2>1. What is AI?</h2>
+<table>
+<tr><th style="width:26%">Who</th><th>Definition</th></tr>
+<tr><td><b>Kaplan &amp; Haenlein</b></td><td>A system's ability to <b>correctly interpret external data, learn from it, and use that learning to achieve goals</b> through flexible adaptation.</td></tr>
+<tr><td><b>Poole &amp; Mackworth</b></td><td>Study of computational <b>agents that act intelligently</b>: actions fit circumstances &amp; goals, flexible, learn from experience, choose well under limits.</td></tr>
+<tr><td><b>Russell &amp; Norvig</b></td><td>Study of agents that receive <b>percepts</b> and take <b>actions</b> &mdash; each agent is a function mapping percepts &rarr; actions.</td></tr>
+</table>
+<ul>
+<li><b>Four schools</b> (Russell &amp; Norvig): machines that <b>think like humans</b>, <b>act like humans</b>, <b>think rationally</b>, <b>act rationally</b>.</li>
+<li>Common core: designing <b>intelligent agents that achieve goals</b>. AI is a <i>moving target</i> &mdash; "AI is whatever computers can't do yet".</li>
+<li><b>Autonomy</b> is context-dependent (Greek <i>auto-nomos</i>, "self-rule"): engineering &rarr; works without an operator; bioethics &rarr; patient's right to decide; Kantian ethics &rarr; choosing one's own moral rules.</li>
+</ul>
+
+<figure><img src="../UNIT-1/images/fig2.1_siri.png" style="max-height:52mm"><figcaption>Figure 2.1 &mdash; Siri: "I can't answer that, Chris." (Should I lie about my weight on my dating profile?)</figcaption></figure>
+<div class="ex"><span class="t">Why this "simple" question is hard</span>Needs speech recognition &rarr; language understanding (homophone <i>lie</i>) &rarr; world knowledge (dating, honesty) &rarr; a <b>moral stance</b>: <b>consequentialist</b> (maximise everyone's happiness), <b>deontological</b> (lying violates duty, Kant), <b>virtue</b> (be honest, Aristotle) &mdash; plus business risk for Apple.</div>
+
+<h3>1.1 Machine learning</h3>
+<table>
+<tr><th style="width:18%">Type</th><th>Idea</th><th style="width:22%">Example</th></tr>
+<tr><td><b>Supervised</b></td><td>Learn from <b>labelled</b> data (classification/regression) &rarr; produces a <i>classifier</i>. Evaluated by <b>true-positive</b> and <b>false-positive</b> rate on a separate <b>test set</b>.</td><td>Spam filter</td></tr>
+<tr><td><b>Unsupervised</b></td><td>Find structure without labels (clustering, PCA); exploratory.</td><td>Customer segments</td></tr>
+<tr><td><b>Reinforcement</b></td><td>Learn a <b>policy</b> (action &rarr; expected reward) from a reward signal.</td><td>Robot navigating to a goal</td></tr>
+</table>
+<div class="warn"><span class="t">Ethics link</span>Supervised labels are assigned by humans, so <b>societal bias can be baked into the classifier</b> &mdash; the thread that leads into Unit 2.</div>
+
+<h3>1.2 Robots &amp; why AI is hard</h3>
+<ul>
+<li><b>Robot</b> = AI that is <b>situated</b> (real world) and <b>embodied</b> (physical body). Works by <b>Sense &rarr; Plan &rarr; Act</b>; an error at one step propagates to the next.</li>
+<li><b>System integration</b> (sensors/actuators with different failure modes) is one of the hardest parts.</li>
+<li><b>Hard for AI:</b> limited sensing; <b>poor generalisation</b> (face recogniser fails on a profile view); <b>no common sense / common ground</b>; no innate knowledge (a robot is a "blank slate"); repeated <b>hype cycles</b>.</li>
+<li><b>Science vs fiction:</b> HAL, Terminator, Westworld inflate expectations (the "Frankenstein complex"). <b>Sophia</b> (Saudi "citizenship", 2017) is scripted PR &mdash; no learning, no adaptation.</li>
+</ul>
+
+<h2>2. Strong vs Weak AI &amp; Types of AI Systems</h2>
+<div class="def"><span class="t">Turing Test (1950)</span>If a human interviewer cannot tell a machine from a person in conversation, the machine is judged intelligent. Replaces the vague word "thinking" with a testable task. <i>Criticism:</i> no time limit specified; passing is not clearly necessary/sufficient for intelligence.</div>
+<table class="keep">
+<tr><th style="width:20%"></th><th>Weak (narrow) AI</th><th>Strong AI (Searle, 1980)</th></tr>
+<tr><td><b>Scope</b></td><td>One narrowly defined task</td><td>General intelligence across many problems</td></tr>
+<tr><td><b>Claim</b></td><td>Simulates intelligent behaviour</td><td>A suitably programmed computer <i>has a mind</i> like humans</td></tr>
+<tr><td><b>Status</b></td><td><b>All current AI</b> (chess/Go engines, loan scoring, Siri)</td><td><b>Not yet achieved</b></td></tr>
+</table>
+<p><b>Types of AI systems:</b> <b>Expert systems</b> (rule-based; e.g. mortgage advisors) &bull; <b>Planning systems</b> (e.g. SPIKE for the Hubble telescope) &bull; <b>Computer vision</b> (object recognition) &bull; <b>Machine learning</b>.</p>
+
+<h2>3. Types of Ethics</h2>
+<p><b>Ethics</b> = theory of morality (principles, general norms); <b>morality</b> = the actual rules, values and norms guiding action. Kant: ethics asks <i>"What should I do?"</i> (Greek <i>ethos</i> = custom; Cicero's <i>mores</i> &rarr; "moral").</p>
+
+<div class="diagram">
+<svg viewBox="0 0 700 230" width="700" xmlns="http://www.w3.org/2000/svg">
+  <rect x="270" y="6" width="160" height="34" rx="8" fill="#1e3a8a"/><text x="350" y="28" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">ETHICS</text>
+  <g stroke="#6d28d9" stroke-width="2" fill="none"><path d="M350 40 V58 M95 58 H605 M95 58 V74 M265 58 V74 M435 58 V74 M605 58 V74"/></g>
+  <g font-size="12" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="10" y="74" width="170" height="34" rx="7" fill="#2563eb"/><text x="95" y="96">Descriptive</text>
+    <rect x="180" y="74" width="170" height="34" rx="7" fill="#7c3aed"/><text x="265" y="96">Normative</text>
+    <rect x="350" y="74" width="170" height="34" rx="7" fill="#0f766e"/><text x="435" y="96">Meta-ethics</text>
+    <rect x="520" y="74" width="170" height="34" rx="7" fill="#b45309"/><text x="605" y="96">Applied ethics</text>
+  </g>
+  <g font-size="11" fill="#1b1f2a" text-anchor="middle">
+    <text x="95" y="130">What people</text><text x="95" y="144">actually believe/do</text>
+    <text x="265" y="130">What we ought to do</text><text x="265" y="144">(right / wrong)</text>
+    <text x="435" y="130">What is morality?</text><text x="435" y="144">ontology &middot; semantics &middot; epistemology</text>
+    <text x="605" y="130">Ethics in a field</text><text x="605" y="144">medical &middot; bio &middot; business</text>
+  </g>
+  <g stroke="#7c3aed" stroke-width="1.6" fill="none"><path d="M265 152 V164 M110 164 H420 M110 164 V176 M265 164 V176 M420 164 V176"/></g>
+  <g font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="30" y="176" width="160" height="30" rx="6" fill="#8b5cf6"/><text x="110" y="196">Deontological</text>
+    <rect x="185" y="176" width="160" height="30" rx="6" fill="#8b5cf6"/><text x="265" y="196">Consequentialist</text>
+    <rect x="340" y="176" width="160" height="30" rx="6" fill="#8b5cf6"/><text x="420" y="196">Virtue</text>
+  </g>
+</svg>
+<div style="font-size:9pt;color:#475569;font-style:italic">Taxonomy of ethics (Ch. 3)</div></div>
+
+<table>
+<tr><th style="width:15%">Branch</th><th style="width:26%">Question</th><th>Key points</th></tr>
+<tr><td><b>Descriptive</b></td><td>What do people actually believe and do?</td><td>Empirical &mdash; moral psychology, experimental economics. E.g. the <b>ultimatum game</b>: people give up profit for fairness. Gives input to normative ethics ("experimental ethics").</td></tr>
+<tr><td><b>Normative</b></td><td>What <i>ought</i> to be done?</td><td>Prescriptive; claims general validity ("stealing is wrong for everybody"). Three theories below.</td></tr>
+<tr><td><b>Meta-ethics</b></td><td>What is morality itself?</td><td><b>Ontology</b> (what has moral worth), <b>semantics</b> (meaning of right/wrong/ought), <b>epistemology</b> (how moral truths are known). "Theory of ethics".</td></tr>
+<tr><td><b>Applied</b></td><td>Ethics in concrete fields</td><td>Medicine, biotech, business. Influence runs <b>both ways</b>: practice shapes theory (solidarity means sharing in a family, fair competition in society).</td></tr>
+</table>
+
+<h3>3.1 The three normative theories</h3>
+<table>
+<tr><th style="width:17%">Theory</th><th style="width:25%">Judges an action by</th><th>Detail</th><th style="width:24%">CSR example</th></tr>
+<tr><td><b>Deontological</b> (duty ethics)</td><td>The action itself &mdash; intention, duty, rule</td><td><b>Kant's categorical imperative</b>: act only on a maxim you can will as a <b>universal law</b> without contradiction.</td><td>Critics ask about the company's <b>motive</b> (PR vs genuine)</td></tr>
+<tr><td><b>Consequentialist</b></td><td>Foreseeable <b>consequences</b></td><td>Bentham &amp; Mill's <b>utilitarianism</b> &mdash; maximise happiness.</td><td>Motive irrelevant; only the <b>impact</b> on society counts</td></tr>
+<tr><td><b>Virtue ethics</b></td><td>The agent's <b>character</b></td><td>Plato's cardinal virtues (<b>wisdom, justice, fortitude, temperance</b>); Aristotle extends to 11 moral + intellectual virtues.</td><td>Is the firm acting honestly and justly?</td></tr>
+</table>
+
+<h2>4. Relationship Between Ethics and Law</h2>
+<p>Popular view: <i>"ethics starts where the law ends"</i> &mdash; the book challenges it:</p>
+<ol>
+<li><b>Laws have an ethical side</b> &mdash; anti-pollution and anti-trust laws are also ethical norms.</li>
+<li><b>Ethics works as "soft law"</b> &mdash; firms follow ethical standards the law doesn't demand, to protect reputation and share price (e.g. <i>fair-trade</i> coffee as a selling point); the effect is almost like <b>hard law</b>.</li>
+</ol>
+<div class="key"><span class="t">Remember</span>Law = enforceable minimum; ethics = broader, often precedes and shapes law (e.g. hate-speech laws on social media). They overlap but are not opposites.</div>
+
+<h2>5. Machine Ethics</h2>
+<div class="def"><span class="t">Machine ethics</span>Asks: <b>what would it take to build an ethical AI that makes moral decisions?</b> Machines lack <b>phenomenology</b> (feelings, consciousness) and moral intuition &mdash; they only process <i>data about</i> feelings. Critics (van Wynsberghe &amp; Robbins) say roboticists haven't given strong reasons to build moral robots.</div>
+
+<div style="display:flex;gap:14px;align-items:center;break-inside:avoid">
+<figure style="flex:0 0 36%;margin:6px 0"><img src="../UNIT-1/images/fig3.3_sophia.png" style="max-height:60mm"><figcaption>Figure 3.3 &mdash; Sophia: lifelike, but no feelings or consciousness</figcaption></figure>
+<div style="flex:1">
+<div class="flow">Sensors &rarr; Symbol grounding &rarr; Moral cognition (logic) &rarr; Action</div>
+<ul>
+<li><b>Symbol grounding</b> = converting raw sensor data into symbols (objects, events, properties, relations).</li>
+<li><b>Logic</b> = truth-preserving inference (Socrates is a man; all men are mortal &rArr; Socrates is mortal).</li>
+</ul></div></div>
+
+<h3>5.1 Machine ethics examples</h3>
+<div class="ex"><span class="t">Easy case &mdash; speeding-ticket robot</span>Rule: <i>if driver X is speeding then the robot is obligated to issue a ticket to X.</i> Fact: X is speeding &rArr; issue ticket. Clear rule + clear symbols = easy.</div>
+<div class="ex"><span class="t">Hard case &mdash; toddler vs letter</span>A robot on its way to post a letter sees a toddler fall into a 1 m stream. Two duties clash: <b>rescue</b> vs <b>post</b>. The robot has no empathy or sense of urgency, so it needs <b>causal understanding</b> and a <b>utility scale</b>: toddler = +1,000,000, on-time letter = +1 &rArr; rescue.</div>
+<div class="warn"><span class="t">When naive utilitarian arithmetic fails</span>Now the robot drives a truck with <b>1,000,001 letters</b> (+1 each) &rArr; 1,000,001 &gt; 1,000,000 &rArr; it lets the toddler drown. Simple utility sums give <b>counter-intuitive</b> results; implementing deontology needs a principled way to <b>resolve clashes of duties</b>.</div>
+
+<h2>6. Moral Diversity and Testing</h2>
+<ul>
+<li><b>Core problem:</b> <b>no agreement on the correct moral theory</b> &mdash; polling (Bourget &amp; Chalmers 2014): roughly &frac14; of philosophers favour deontology, &frac14; consequentialism, &#8531; virtue ethics. Which one do we implement?</li>
+<li><b>Approach &mdash; test cases:</b> design many ethical test cases; moral competence = ability to pass them. Iterating on new cases may expand competence and give insight into theory.</li>
+<li><b>Testing &amp; certifying fairness (active research):</b> IEEE standards project on <b>algorithmic bias</b> (2017); <b>AI Fairness 360</b>, <b>audit-AI</b>; services like O'Neil Risk Consulting &amp; Algorithmic Auditing; Facebook's <b>Fairness Flow</b>.</li>
+<li>Also: codes of ethics for robotics engineers and HRI professionals. Some researchers remain <b>pessimistic</b> about machine morality.</li>
+</ul>
+
+<h2>7. Trust &mdash; the Foundation of the Core Principles</h2>
+<div class="def"><span class="t">Trust (Lee &amp; See 2004)</span>The attitude that an agent will help achieve one's goals <b>in a situation characterised by uncertainty and vulnerability</b>.</div>
+<ul>
+<li>Trust drives <b>user acceptance</b>: untrusted products fail. <b>Culture</b> matters &mdash; e.g. after the US-EU <i>Safe Harbor</i> was struck down (2015), cloud firms opened EU data centres to regain trust.</li>
+<li><b>Functional elements:</b> reliability, dependability, false-alarm rate, transparency, task complexity &mdash; <b>performance &amp; reliability dominate</b>. Risk of injury/loss of life makes people reconsider trust.</li>
+<li><b>Ethical elements:</b> the five AI4People principles below. With AI it is unclear whether the machine decides or follows a script, so human experience of trust may mislead.</li>
+</ul>
+
+<h2>8. The Five AI4People Principles (Floridi et al. 2018)</h2>
+<div class="diagram">
+<svg viewBox="0 0 700 92" width="700" xmlns="http://www.w3.org/2000/svg">
+  <g font-size="12.5" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="2" y="8" width="132" height="44" rx="8" fill="#dc2626"/><text x="68" y="35">Non-maleficence</text>
+    <rect x="142" y="8" width="132" height="44" rx="8" fill="#16a34a"/><text x="208" y="35">Beneficence</text>
+    <rect x="282" y="8" width="132" height="44" rx="8" fill="#2563eb"/><text x="348" y="35">Autonomy</text>
+    <rect x="422" y="8" width="132" height="44" rx="8" fill="#7c3aed"/><text x="488" y="35">Justice</text>
+    <rect x="562" y="8" width="132" height="44" rx="8" fill="#0f766e"/><text x="628" y="35">Explicability</text>
+  </g>
+  <g font-size="11" fill="#1b1f2a" text-anchor="middle">
+    <text x="68" y="70">do no harm</text><text x="208" y="70">do good</text><text x="348" y="70">respect wishes</text><text x="488" y="70">be fair, unbiased</text><text x="628" y="70">be explainable</text>
+  </g>
+</svg></div>
+
+<table>
+<tr><th style="width:15%">Principle</th><th>Meaning &amp; examples</th></tr>
+<tr><td><b>Non-maleficence</b></td><td>AI shall <b>not harm</b> people, animals or property. Online <b>bullying</b> (Sweden's 1993 law) and <b>hate speech</b> (Germany 2017: fines up to &euro;50 M if illegal content isn't removed within a week &mdash; but risks over-removal vs free speech).</td></tr>
+<tr><td><b>Beneficence</b></td><td>AI shall <b>do good</b>; benefits must outweigh harms (from bioethics): fewer AV accidents, elder-care robots, telemedicine, smart grids, protecting biodiversity, personalised education.</td></tr>
+<tr><td><b>Autonomy</b></td><td>AI shall <b>respect people's goals and wishes</b>. Allow informed risk-taking (Everest sherpas, rock climbing) but not harm to others (child tells a robot "pull my sister's hair"); be wary of euthanasia robots. <b>Kant's three formulations:</b> universal law &bull; humanity as an <b>end, never merely a means</b> &bull; kingdom of ends. Asimov's Three Laws alone don't make a Kantian ethical agent.</td></tr>
+<tr><td><b>Justice</b></td><td>AI shall act <b>justly and without bias</b> &rarr; Section 9.</td></tr>
+<tr><td><b>Explicability</b></td><td>It must be possible to <b>explain why</b> an AI reached a result &rarr; Section 10.</td></tr>
+</table>
+
+<h2>9. Bias and Fairness (Principle of Justice)</h2>
+<div style="display:flex;gap:14px;align-items:flex-start">
+<figure style="flex:0 0 34%;margin:4px 0"><img src="../UNIT-1/images/fig4.1_justitia.png" style="max-height:62mm"><figcaption>Figure 4.1 &mdash; Justitia: blindfold = impartiality, scales = weighing evidence, sword = punishment</figcaption></figure>
+<div style="flex:1">
+<ul>
+<li>Defining "justice" for a machine is hard because <b>moral theory is contested</b>; but in a <b>narrow scope with clear laws</b>, AI can make specific moral decisions.</li>
+<li><b>Credit scoring:</b> neighbourhood data &rarr; systematic bias against residential areas.</li>
+<li><b>Healthcare algorithm (Obermeyer 2019):</b> race excluded, yet <b>cost</b> used as proxy for <b>need</b> &rarr; poorer patients under-served; root cause = <b>problem formulation</b>.</li>
+<li><b>COMPAS</b> (courts): ProPublica (2016) found bias against African-American defendants; developers cited differing <b>base rates</b>. Chouldechova (2017): predictive parity and equal error rates <b>cannot both hold</b> when base rates differ &rarr; <b>fairness definitions conflict</b>, and there is a <b>fairness &ndash; accuracy trade-off</b>. Accuracy only &asymp;65%.</li>
+</ul></div></div>
+<div class="exam"><span class="t">Detail in Unit 2</span>Types of bias, detection metrics and mitigation techniques are covered in the Unit 2 notes.</div>
+
+<h2>10. Transparency and Explainability (Principle of Explicability)</h2>
+<ul>
+<li><b>Explicability = intelligibility + accountability</b> (Floridi). It is <b>not identical to transparency</b>: publishing millions of lines of code won't help non-experts and may harm competitiveness.</li>
+<li><b>Intelligibility:</b> no inscrutable <b>black box</b> &mdash; someone can explain the workings to judges, juries and users.</li>
+<li><b>Legal:</b> EU <b>GDPR "right to information/explanation"</b> for algorithmic decisions &mdash; hard for neural networks &rarr; research in <b>Explainable AI (XAI)</b>.</li>
+<li><b>Justification</b> is part of moral functioning. <i>Loomis v. Wisconsin</i>: defendant challenged the proprietary COMPAS score; appeal failed as judges did not rely on the score alone.</li>
+<li><b>Accountability:</b> <b>log files</b> (like an aircraft flight recorder, "black box") let investigators retrace steps and assign blame.</li>
+</ul>
+
+<h2>11. Privacy and Security <span class="plus">+</span></h2>
+<table>
+<tr><th style="width:15%"></th><th>Key ideas</th></tr>
+<tr><td><b>Privacy</b></td><td>Control over personal data. AI is data-hungry; book Ch. 8 covers persistent surveillance, use of data for unintended purposes, auto-insurance discrimination, China's Social Credit System. Principles: <b>consent, purpose limitation, data minimisation</b>, anonymisation, GDPR rights.</td></tr>
+<tr><td><b>Security</b></td><td>Protect data and models from breaches, <b>adversarial attacks</b>, <b>data poisoning</b> and model theft. Failures destroy trust and cause harm (links to non-maleficence).</td></tr>
+</table>
+
+<h2>12. Robustness and Reliability <span class="plus">+</span></h2>
+<ul>
+<li><b>Robustness:</b> correct behaviour under changed, noisy or adversarial inputs &mdash; the book stresses AI <b>generalises poorly</b> and lacks common sense.</li>
+<li><b>Reliability:</b> consistent, dependable performance over time; the book names it (with performance) the <b>dominant factor in trust</b>. Failures in safety-critical domains (vehicles, medicine) risk life.</li>
+<li><b>Practices:</b> stress and edge-case testing, drift monitoring, fail-safe fallbacks, <b>human oversight</b>.</li>
+</ul>
+
+<h2>13. Quick Revision &amp; Likely Questions</h2>
+<div class="key sum"><span class="t">One-liners</span>
+<ul>
+<li>AI = agents that perceive, learn and act towards goals; today's AI is all <b>weak</b>.</li>
+<li>Ethics: <b>descriptive</b> (is) &bull; <b>normative</b> (ought) &bull; <b>meta</b> (nature) &bull; <b>applied</b> (fields).</li>
+<li>Normative: <b>deontology</b> (duty, Kant) &bull; <b>consequentialism</b> (outcomes, utility) &bull; <b>virtue</b> (character, Aristotle).</li>
+<li>Ethics &ne; law but overlap; ethics acts as <b>soft law</b>.</li>
+<li>Machine ethics hurdles: no feelings, <b>no agreed theory</b>, naive utilities misfire &rarr; <b>test cases</b>.</li>
+<li>Five principles: <b>Non-maleficence, Beneficence, Autonomy, Justice, Explicability</b>.</li>
+</ul></div>
+<div class="exam"><span class="t">Likely questions</span>
+<ol>
+<li>Differentiate strong and weak AI with examples. (2)</li>
+<li>Explain descriptive, normative and meta-ethics. (6)</li>
+<li>Compare deontological, consequentialist and virtue ethics with one example. (8)</li>
+<li>Discuss the relationship between ethics and law. (5)</li>
+<li>Using the toddler&ndash;letter example, explain difficulties in machine ethics. (6)</li>
+<li>How does moral diversity affect testing of ethical AI? Name bias-testing tools. (5)</li>
+<li>Explain the five AI4People principles; relate justice and explicability to COMPAS. (10)</li>
+</ol></div>
+
+<div class="foot">Ethical AI &middot; Unit 1 Consolidated Notes &middot; built from Bartneck et al., <i>An Introduction to Ethics in Robotics and AI</i></div>
+</body></html>
