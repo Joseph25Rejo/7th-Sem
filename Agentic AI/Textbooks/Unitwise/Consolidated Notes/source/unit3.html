@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Agentic AI - Unit 3 Consolidated Notes</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<div class="cover">
+  <div class="tag">Agentic AI &middot; Consolidated Summary Notes</div>
+  <h1>Unit 3 &mdash; Planning with Tools &amp; the Coordinator-Worker-Delegator Model</h1>
+  <div class="sub">FF, LLM-based &amp; HTN planning &bull; Integrating tools + planning &bull; CrewAI / AutoGen / LangGraph &bull; CWD model, roles, communication</div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Planning algorithms recap (A*, GraphPlan, MCTS)</li>
+<li>Fast Forward (FF) planning + code</li>
+<li>LLM-based planning (CrewAI example)</li>
+<li>HTN planning (decomposition + CrewAI hierarchical)</li>
+<li>Integrating tool use and planning</li>
+<li>Reasoning about tools; planning for tool use</li>
+<li>Frameworks: CrewAI, AutoGen, LangGraph + comparison</li>
+<li>Chapter 5 Q&amp;A</li>
+<li>The CWD model &mdash; roles, principles</li>
+<li>CWD for the intelligent travel agent</li>
+<li>Designing agents with role assignments</li>
+<li>Communication &amp; collaboration between agents</li>
+<li>Implementing CWD in generative-AI systems (intro)</li>
+</ol></div>
+
+<h2>1. Recap &mdash; Less Practical Planners for LLM Agents</h2>
+<table>
+<tr><th>Algorithm</th><th>Problem when used with LLM agents</th></tr>
+<tr><td><b>A* planning</b></td><td>Needs a clear action-cost function <i>and</i> heuristic estimate of remaining cost; impossible to quantify the "distance" between conversation states or the "cost" of reaching an understanding.</td></tr>
+<tr><td><b>GraphPlan</b></td><td>Layered action/effect graph breaks down: language isn't discrete layers with clear cause-and-effect; combinatorial explosion; mutual-exclusion between conversational actions hard to determine &rarr; intractable.</td></tr>
+<tr><td><b>MCTS</b></td><td>Each simulation = real LLM calls (too costly); random sampling inefficient in the vast language space; game-like strength becomes weakness in open-ended language.</td></tr>
+</table>
+
+<h2>2. Moderately Practical &mdash; Fast Forward (FF) Planning</h2>
+<p>FF uses <b>heuristic search with a simplified (relaxed) planning problem</b> to guide search.</p>
+<table>
+<tr><th>Advantages for LLM agents</th><th>Challenges</th></tr>
+<tr><td>
+&bull; Goal-oriented approach aligns with how LLMs complete tasks<br>
+&bull; Relaxed planning gives useful approximations for complex language tasks<br>
+&bull; Heuristic guidance manages huge language search space<br>
+&bull; Flexible: works with <b>partial state descriptions</b> &mdash; valuable in natural language</td>
+<td>
+&bull; Original numeric heuristics don't translate to language states<br>
+&bull; Relaxed plans risk oversimplifying rich language context<br>
+&bull; Hard to define clear <b>delete effects</b> (what a conversation action removes/changes)<br>
+&bull; State representation needs substantial adaptation to natural language</td></tr>
+</table>
+<pre>class LLMFastForward:
+    def create_relaxed_plan(self, current_state: str, goal: str) -&gt; list:
+        """Create a simplified plan ignoring complexities"""
+        prompt = f"Given current state: {current_state}\nAnd goal: {goal}\n"
+        prompt += "Generate a simplified step-by-step plan"
+        return self.llm.generate_plan(prompt)
+
+    def select_next_action(self, relaxed_plan: list):
+        """Choose next action based on the relaxed plan"""
+        return relaxed_plan[0]   # simplified selection</pre>
+<ul>
+<li><code>create_relaxed_plan</code> &mdash; takes current state &amp; goal as text, asks the LLM for a high-level simplified plan (ignores complexities, like FF ignores delete effects).</li>
+<li><code>select_next_action</code> &mdash; here simply takes the first action (<code>relaxed_plan[0]</code>); a real one would add selection logic.</li>
+<li>Verdict: <b>moderately practical</b> &mdash; possible but needs significant modification from its original form.</li>
+</ul>
+
+<h2>3. Most Practical &mdash; LLM-Based Planning &amp; HTN</h2>
+<p>These align naturally with how language models process information and handle complex tasks; they embrace the fluid, contextual nature of language-based planning that traditional planners struggle with.</p>
+
+<h3>3.1 LLM-based planning</h3>
+<p>LLMs <b>understand complex goals, generate appropriate steps, and adapt them as context changes</b>. Unlike traditional planners needing explicit state representations, LLM planners work with <b>natural-language descriptions of states and actions</b> &mdash; flexible and expressive.</p>
+<figure><img src="../assets/u3_fig5-3.png"><figcaption>Figure 5.3 &mdash; LLM-based planning algorithm flow</figcaption></figure>
+<div class="flow">User request &rarr; Goal understanding (+ domain knowledge, current state, constraints) &rarr; Plan generation &rarr; Step decomposition &rarr; Execution planning &rarr; Action execution &rarr; Monitoring &rarr; Success? (No &rarr; replan / Yes &rarr; Final state)</div>
+<div class="ex"><span class="t">CrewAI implementation &mdash; TravelPlanner</span>
+Two specialised agents: <b>Travel Planning Strategist</b> (breaks requests into manageable steps) and <b>Travel Researcher</b> (validates and finds options). Two tasks (planning_task &rarr; research_task) run in a <b>Process.sequential</b> crew via <code>crew.kickoff(inputs={"request": request})</code>. The planning task: understand client requirements, specific booking requirements, required validations; research task: flight availability, hotel options, local transportation.</div>
+<pre>class TravelPlanner:
+    def __init__(self):
+        self.planner = Agent(role='Travel Planning Strategist',
+                             goal='Create comprehensive, personalized travel plans', ...)
+        self.researcher = Agent(role='Travel Researcher',
+                                goal='Find and validate travel options and opportunities', ...)
+    def create_travel_plan(self, request: str) -&gt; Dict:
+        planning_task = Task(description=f"Analyze the following travel request ... {request}", agent=self.planner)
+        research_task = Task(description="Based on the initial plan, research and validate: "
+                             "Flight availability, hotel options, and local transportation", agent=self.researcher)
+        crew = Crew(agents=[self.planner, self.researcher],
+                    tasks=[planning_task, research_task], process=Process.sequential)
+        return crew.kickoff(inputs={"request": request})</pre>
+<ul>
+<li><b>Advantages:</b> understands complex natural-language requests, generates steps dynamically, adapts to scenarios, agents share context and build on each other's output; handles nuance ("relaxing beach vacation with some cultural activities" &rarr; concrete recommendations); handles <b>novel situations</b> (STRIPS/A* need explicit states for every scenario); handles <b>uncertainty and partial information</b> by making reasonable assumptions and adding contingency steps.</li>
+<li><b>Caveats:</b> may generate <b>overly optimistic or impractical plans</b> if not constrained; may struggle with <b>highly specific numerical constraints / strict timing</b> unless explicitly handled.</li>
+</ul>
+
+<h3>3.2 HTN (Hierarchical Task Network) planning</h3>
+<div class="def"><span class="t">HTN</span>Breaks complex tasks into simpler subtasks, forming a <b>hierarchy of actions</b>. Unlike STRIPS (primitive actions), HTN works with <b>abstract (compound) tasks</b> and decomposes them progressively until <b>primitive tasks</b> that can be executed directly.</div>
+<pre>def buy_groceries_task():
+    return [('go_to_store', []), ('select_items', []), ('checkout', []), ('return_home', [])]
+
+def select_items_task():
+    return [('check_list', []), ('find_item', []), ('add_to_cart', [])]</pre>
+<p><code>buy_groceries_task</code> is a high-level task split into four subtasks; <code>select_items</code> is further decomposed into three actions.</p>
+<figure><img src="../assets/u3_fig5-4.png"><figcaption>Figure 5.4 &mdash; HTN decomposition: Plan travel &rarr; Book flights / Book hotel / Plan activities &rarr; 3rd-level tasks</figcaption></figure>
+<ul>
+<li>Travel decomposition: <b>Plan travel</b> &rarr; (2nd level) Book flights, Book hotel, Plan activities &rarr; (3rd level) Search &amp; compare flights, Make reservation, Research &amp; check availability, Make bookings, Location &amp; price comparison, Book hotel.</li>
+<li><b>CrewAI hierarchical process</b>: needs a <b>Manager</b> that breaks down tasks and delegates to agents. Manager can be an <b>agent</b> (control how tasks break down to n levels) or the <b>LLM itself</b> (<code>manager_llm</code>; arbitrary plan generated by LLM; prompt engineering gives some control but is less flexible &mdash; for simpler workflows).</li>
+</ul>
+<pre>flight_specialist = Agent(role='Flight Planning Specialist', goal='Handle all aspects of flight arrangements', backstory='Expert in airline bookings and flight logistics.')
+accommodation_specialist = Agent(role='Accommodation Specialist', goal='Manage all accommodation-related planning', ...)
+activity_specialist = Agent(role='Vacation Activity Specialist', goal='Manage all activity-related planning', ...)
+manager_llm = ChatOpenAI(model="gpt-4o-mini")
+travel_planning_task = Task(description=f"Plan a comprehensive flight itinerary: {request} ...",
+                            expected_output="A detailed flight itinerary ...", agent=None)  # manager delegates
+crew = Crew(agents=[flight_specialist, accommodation_specialist, activity_specialist],
+            tasks=[travel_planning_task], process=Process.hierarchical, manager_llm=manager_llm)
+return crew.kickoff()</pre>
+<div class="warn"><span class="t">Important observation</span>The sample output (5-day Paris trip for two adults from New York: flights $2,960, hotel &euro;800, transfers &euro;100, Versailles day trip &asymp;&euro;364.20) is <b>completely fictional</b> because the system has <b>no access to external tools/lookup</b> &mdash; this underscores why tools are needed.</div>
+<p><b>Advantages of HTN:</b> natural problem representation mirroring human thinking; better <b>scalability</b> (reduced search space); encodes <b>expert knowledge</b> in reusable task hierarchies; flexible with both abstract and primitive tasks (different levels of abstraction).</p>
+
+<h2>4. Integrating Tool Use and Planning</h2>
+<p>Earlier AI work treated planning algorithms and tool capabilities separately. Truly intelligent agents need them <b>integrated</b>: the travel planner gave a detailed but <b>non-factual</b> plan; to ground it in real flight/hotel/activity data, <b>tools must be combined with planning</b>.</p>
+<h3>4.1 Reasoning about tools</h3>
+<ul>
+<li>Agents must understand each tool's <b>functionality, capabilities, limitations</b> and when/where it applies; assess tools against current goals and choose the most appropriate.</li>
+<li>For LLM agents this reasoning is <b>largely handled by the LLM</b>: provide clear tool descriptions; no complex reasoning code needed.</li>
+</ul>
+<pre>travel_agent = Agent(role='Travel Planner', goal='Plan comprehensive travel itineraries',
+    tools=[flight_search_tool,      # finding and booking flights
+           hotel_booking_tool,      # hotel reservations
+           activity_planner_tool])  # local activities and attractions</pre>
+<p>The LLM agent naturally understands <b>which tool</b> to use per task, <b>when to combine</b> tools (coordinate flight &amp; hotel dates) and <b>how to adapt</b> usage to requirements (budget).</p>
+<table>
+<tr><th>Smaller / untrained models may</th><th>Even capable models may</th></tr>
+<tr><td>Fail to understand when a tool is needed<br>Make incorrect assumptions about capabilities<br>Use tools in wrong sequences<br>Miss opportunities to use tools<br>Ignore tool constraints/requirements</td><td>Struggle with complex multi-step tool combinations<br>Be inconsistent in tool selection across similar scenarios<br>Confuse tools with subtle functional differences<br>Struggle with error recovery when tools fail</td></tr>
+</table>
+<p>Hence CrewAI, LangGraph and AutoGen work best with advanced models with strong tool reasoning, and tool-usage patterns must be <b>tested before deployment</b>.</p>
+
+<h3>4.2 Planning for tool use</h3>
+<figure><img src="../assets/u3_fig5-5.png"><figcaption>Figure 5.5 &mdash; Tool planning flow</figcaption></figure>
+<ol>
+<li><b>Goal understanding</b> via natural-language processing (e.g., a family vacation needs family-friendly accommodation and activities too).</li>
+<li><b>Plan formation</b>: identify required tools, determine dependencies, create action sequence &mdash; mirrors HTN decomposition but with LLM flexibility.</li>
+<li><b>Tool integration</b> &mdash; agent understands capabilities from descriptions, sequences them (confirm flight dates before hotels; activity planning considers location &amp; timing).</li>
+<li><b>Tool execution</b>, then <b>monitor and adjust</b> based on new information/changed circumstances (like a human travel agent reacting to client feedback).</li>
+</ol>
+<p>Combines the structure of traditional planning with the adaptability of language models.</p>
+
+<h2>5. Practical Implementations &mdash; Three Frameworks</h2>
+<h3>5.1 CrewAI</h3>
+<ul>
+<li>Provides a <code>@tool</code> decorator to define tools with descriptions/docs (<code>search_flights</code>, <code>find_hotels</code>, <code>find_activities</code>).</li>
+<li>Agent has <b>role, goal, backstory, tools</b>; Task has description, expected_output, agent.</li>
+<li><code>crew.kickoff()</code>: understands requirements from task description &rarr; identifies tools needed from role &amp; goals &rarr; uses tools in logical sequence &rarr; processes outputs into final response.</li>
+</ul>
+<pre>@tool("Search for available flights between cities")
+def search_flights(...) -&gt; dict:
+    """Search for available flights between cities."""
+agent = Agent(role='An expert travel concierge', goal='Handle all aspects of travel planning',
+              backstory="Expert in airline bookings, hotel bookings, and booking vacation activities.",
+              tools=[search_flights, find_hotels, find_activities], verbose=False)</pre>
+<h3>5.2 AutoGen</h3>
+<ul>
+<li>Platform where AI agents <b>converse</b> to solve tasks; uses <code>RoundRobinGroupChat</code> with four agents: <b>flight planner, hotel planner, activities planner, summary agent</b>.</li>
+<li>Each <code>AssistantAgent</code> has <b>name, description, model client</b> (e.g., GPT-4o-mini), <b>tools</b>, and <b>system_message</b>.</li>
+<li><b>Agent communication</b>: round-robin turn-taking (vs CrewAI's hierarchical task-based approach).</li>
+<li><b>Termination</b>: <code>TextMentionTermination</code> &mdash; summary agent ends conversation by saying <code>"TERMINATE"</code>. Parameters: <code>mention_text</code> (keyword), <code>case_sensitive</code>, <code>strip_whitespace</code>, <code>regex_match</code>.</li>
+<li><b>Tool integration</b>: tools associated directly with agents at initialisation (not decorators).</li>
+<li><b>Coordination pattern</b>: collaborative, agents contribute equally; summary agent creates the final integrated plan.</li>
+</ul>
+<pre>flight_agent = AssistantAgent(name="flight_planner", model_client=model_client,
+    tools=[travel_tools.search_flights],
+    description="A helpful assistant that can plan flights itinerary for vacation trips.",
+    system_message="You are a helpful assistant that can plan flight itinerary ...")
+group_chat = RoundRobinGroupChat([flight_agent, hotel_agent], termination_condition=termination)
+await Console(group_chat.run_stream(task="I need to plan a trip to Paris from New York for 5 days."))</pre>
+<h3>5.3 LangGraph (LangChain)</h3>
+<ul>
+<li>Sub-framework of LangChain for LLM agent workflows; a <b>state machine / workflow graph</b> of nodes &amp; edges (<code>@tool</code> decorator for tools).</li>
+<li>Two main nodes: <b>agent node</b> (processes messages, decides) and <b>tool node</b> (executes flight search, hotel booking, activity planning).</li>
+<li>Cycle: agent evaluates state &rarr; either calls tools or gives final response, controlled by a conditional function (<code>should_continue</code>) routing to tools or ending. Tools node <b>always returns to agent</b>. <code>MemorySaver</code> checkpoint persists state; graph compiled into a runnable.</li>
+</ul>
+<pre>workflow = StateGraph(MessagesState)
+workflow.add_node("agent", call_model)
+workflow.add_node("tools", tool_node)
+workflow.add_edge(START, "agent")
+workflow.add_conditional_edges("agent", should_continue)
+workflow.add_edge("tools", 'agent')
+checkpointer = MemorySaver()
+app = workflow.compile(checkpointer=checkpointer)
+final_state = app.invoke({"messages": [HumanMessage(content="I need to plan a trip to Paris from New York for 5 days")]},
+                         config={"configurable": {"thread_id": 42}})</pre>
+<p><b>Pros:</b> explicit flow control (easy to visualise), built-in state management with <b>checkpointing</b>. <b>Cons:</b> needs graph-programming understanding; more initial setup than CrewAI.</p>
+<table>
+<tr><th>Aspect</th><th>LangGraph</th><th>CrewAI</th><th>AutoGen</th></tr>
+<tr><td><b>State management</b></td><td>Explicit state management</td><td>Via agent instances and task context</td><td>Via group-chat message history</td></tr>
+<tr><td><b>Tool integration</b></td><td>Dedicated tool node</td><td>Decorator-based definition, direct agent association</td><td>Tools associated directly with specific agents</td></tr>
+<tr><td><b>Flow control</b></td><td>Graph-based workflow</td><td>Hierarchical task decomposition or sequential flow</td><td>Round-robin turn-taking</td></tr>
+</table>
+
+<h2>6. Chapter 5 Questions &amp; Answers</h2>
+<div class="exam">
+<b>1. Purpose of tools; role of docstrings?</b> Tools are functions letting agents perform specific tasks/access external services; docstrings give purpose, expected parameters and return values so the LLM knows when/how to use them.<br>
+<b>2. Traditional (STRIPS) vs LLM-based planning?</b> Traditional rely on explicit states &amp; predefined actions with binary conditions; LLM-based works with natural language and handles ambiguous states &mdash; traditional can't represent nuanced contextual language tasks.<br>
+<b>3. How does HTN work; why practical?</b> Progressive decomposition into simpler subtasks in a hierarchy; mirrors how LLMs process tasks; structured planning plus flexibility.<br>
+<b>4. Reasoning in tool selection &amp; its limits?</b> Largely the model's built-in ability; limits: inconsistent selection, complex combinations, error recovery.<br>
+<b>5. Framework selection factors?</b> Workflow complexity (structured vs conversational), state management needs, multi-agent collaboration, development complexity. CrewAI = straightforward; AutoGen = multi-agent interaction; LangGraph = robust workflow control but more setup.</div>
+
+<h1 style="page-break-before: always; margin:0"></h1>
+<div class="cover" style="margin-top:0">
+  <div class="tag">Chapter 6</div>
+  <h1 style="font-size:20pt">Exploring the Coordinator, Worker, and Delegator (CWD) Approach</h1>
+</div>
+
+<h2>7. The CWD Model</h2>
+<p>A framework for building <b>multi-agent systems</b> emphasising <b>collaboration, specialisation and effective task distribution/resource management</b>. Inspired by <b>organisational psychology and management theory</b> &mdash; clear role delegation and hierarchy as in human organisations. Suitable where autonomous agents collaborate on goals beyond a single agent's capability.</p>
+<figure><img src="../assets/u3_fig6-1.png"><figcaption>Figure 6.1 &mdash; The CWD model: Coordinator (top) &harr; Delegator (middle) &harr; Worker (base); tasks &amp; priorities flow down, aggregated results flow up</figcaption></figure>
+<table>
+<tr><th>Role</th><th>Responsibilities</th></tr>
+<tr><td><b>Coordinator</b></td><td>Manages tasks, resources and overall workflow; monitors progress, assigns tasks to appropriate agents, enables collaboration among workers; <b>orchestrator</b> keeping the system aligned with objectives. Prioritises workloads by <b>dynamically allocating tasks</b> based on urgency, resource availability and dependencies; adjusts assignments.</td></tr>
+<tr><td><b>Workers</b></td><td>Specialised agents carrying out specific tasks/functions; diverse capabilities and expertise; when assigned by delegators they use specialised knowledge to realise task objectives &rarr; division of labour, optimum overall performance.</td></tr>
+<tr><td><b>Delegators</b></td><td>Intermediaries between coordinators and workers; implement workload assignments by resource availability and system needs; interface for communication; dispatch &amp; balance workload; assign right tasks to right workers at the right time. Optimise <b>throughput, latency and resource utilisation</b> (min delays, max tasks per unit time, prevent bottlenecks).</td></tr>
+</table>
+
+<h3>7.1 Key principles of the CWD model</h3>
+<ul>
+<li><b>Separation of concerns</b> &mdash; strategic planning (coordinator), resource management (delegator), task execution (worker): each focuses on its core competency; flexibility and scalability.</li>
+<li><b>Hierarchical organisation</b> &mdash; Top: strategic oversight &amp; planning; Middle: resource management &amp; coordination; Base: specialised task execution.</li>
+<li><b>Information flow &amp; feedback loops</b> &mdash; bidirectional: <b>downward</b> (task assignments, priorities, constraints), <b>upward</b> (progress updates, results, resource utilisation).</li>
+<li><b>Adaptability &amp; resilience</b>:
+  <ul>
+  <li><b>Dynamic resource allocation</b> &mdash; reassess workload and redistribute resources in real time.</li>
+  <li><b>Fault tolerance through redundancy</b> &mdash; overlapping capabilities allow seamless handoff and recovery.</li>
+  <li><b>Load balancing</b> &mdash; distribute by availability, expertise, current workload.</li>
+  <li><b>Runtime role reassignment</b> &mdash; agents adapt roles to evolving needs.</li>
+  </ul></li>
+</ul>
+
+<h2>8. CWD for the Intelligent Travel Agent</h2>
+<figure><img src="../assets/u3_fig6-2.png"><figcaption>Figure 6.2 &mdash; CWD model for the travel planner</figcaption></figure>
+<table>
+<tr><th>Agent</th><th>Duties</th></tr>
+<tr><td><b>Coordinator &mdash; travel planning coordinator</b></td><td>Manage overall travel-planning process from user request; monitor progress &amp; collaboration; assign tasks/coordinate workflow per customer requirements.</td></tr>
+<tr><td><b>Workers</b></td><td><b>Flight booking</b> (search/book by dates, destinations, preferences); <b>Hotel booking</b> (location, amenities, preferences); <b>Activity planning</b> (tours/experiences tailored to interests); <b>Transportation</b> (rental cars, airport transfers, local transport).</td></tr>
+<tr><td><b>Delegator &mdash; travel task delegator</b></td><td>Interface between coordinator and workers; receives tasks; assesses capabilities &amp; availability; assigns by expertise and workload; balances workload.</td></tr>
+</table>
+<h4>Workflow (9 steps)</h4>
+<ol>
+<li>User gives requirements (destination, dates, budget, preferences &mdash; family-friendly, cultural, beach).</li>
+<li>Coordinator analyses and <b>decomposes</b> the task into subtasks.</li>
+<li>Subtasks passed to the delegator.</li>
+<li>Delegator assesses available workers and assigns tasks.</li>
+<li>Workers collaborate/share information for a cohesive plan.</li>
+<li>Delegator monitors progress and balances workload.</li>
+<li>Workers submit outputs (flight bookings, hotel reservations, activity itineraries, transport arrangements) to the delegator.</li>
+<li>Delegator compiles/integrates outputs into a comprehensive plan.</li>
+<li>Coordinator reviews, adjusts and presents the plan for customer approval.</li>
+</ol>
+<p>Benefits: complex tasks broken down, clear communication and responsibility, multiple requests handled simultaneously with quality. (Full code in <code>Chapter_06.ipynb</code> using CrewAI and AutoGen.)</p>
+
+<h2>9. Designing Agents with Role Assignments</h2>
+<p>In CrewAI each agent is initialised with <b>role, goal and backstory</b>.</p>
+<ul>
+<li><b>Role</b> &mdash; foundation of behaviour/responsibilities; defines what the agent does and how it fits (e.g., coordinator = "Strategic Planning Manager").</li>
+<li><b>Backstory</b> &mdash; a crafted narrative providing depth and context that shapes decision-making and interaction style (e.g., "veteran project manager who led diverse teams in Silicon Valley startups ..."). It is <b>CrewAI-specific</b>: CrewAI merges backstory with role into the LLM's <b>system prompt</b>.</li>
+</ul>
+<pre>coordinator = Agent(role="Strategic Planning Manager",
+    backstory="A veteran project manager who has successfully led diverse teams in Silicon Valley startups, "
+              "known for balancing innovation with practical execution. Expertise in bridging communication "
+              "gaps between technical and non-technical teams while maintaining focus on key deliverables.",
+    verbose=True)</pre>
+<h3>9.1 Typical roles in CWD systems</h3>
+<table>
+<tr><th>Role</th><th>CWD mapping</th><th>Travel-agent duties</th></tr>
+<tr><td><b>Manager</b></td><td>= Coordinator</td><td>Monitor planning progress; allocate resources (compute, external API access); ensure time constraints are met.</td></tr>
+<tr><td><b>Analyst</b></td><td>Worker</td><td>Analyse customer preferences &amp; trends; recommend destinations/activities; find cost savings &amp; optimal routes; summarise outcomes.</td></tr>
+<tr><td><b>Reflector</b></td><td>Worker</td><td>Observe performance; analyse feedback &amp; satisfaction; identify bottlenecks/inefficiencies; propose improvements to algorithms/workflows.</td></tr>
+<tr><td><b>Searcher</b></td><td>Worker</td><td>Explore the problem space; discover new destinations/activities; explore alternative transport/routes; share trends &amp; regulations (innovation).</td></tr>
+<tr><td><b>Task Interpreter</b></td><td>= Delegator</td><td>Map high-level tasks into concrete actions; break request into subtasks; translate preferences into tasks; ensure tasks are clear/unambiguous.</td></tr>
+</table>
+<p><b>Background research:</b> Kaz&iacute;k (2010) studied <b>role-based approaches</b> in multi-agent systems &mdash; roles are abstract representations of stereotypical behaviour providing interfaces through which agents get knowledge of/affect their environment. Principles carried to LLM agents: <b>separation of interaction logic from inner algorithmic logic, dynamic role assignment, modular system organisation</b> &rarr; modular, reusable designs.</p>
+
+<h3>9.2 Roles and responsibilities in the intelligent travel planning MAS</h3>
+<ul>
+<li><b>Travel planning agent (coordinator)</b> &mdash; "Travel Planning Executive": strategic overseer; 15 years' luxury-travel experience; goals: cohesive plans, high customer satisfaction, optimised resource allocation; handles contingencies.</li>
+<li><b>Core travel workers</b>:
+ <ul>
+ <li><b>Flight booking worker</b> &mdash; "Aviation Booking Specialist" (airline reservations, fare classes, routing rules, alliances); goals: optimal arrangements, max value for money, booking accuracy.</li>
+ <li><b>Hotel booking worker</b> &mdash; "Hospitality Accommodation Expert" (categories, room types, loyalty programs, seasonal pricing, promotions); goals: perfect matches, best rates, special requests.</li>
+ <li><b>Activity planning worker</b> &mdash; "Destination Experience Curator" (cultural knowledge + tour operations); goals: engaging itineraries, balance activities/free time, cultural authenticity.</li>
+ <li><b>Transportation worker</b> &mdash; "Ground Transportation Logistics Specialist"; goals: reliable transfers, optimise local transport, maintain backup options.</li>
+ </ul></li>
+<li><b>Analysis &amp; intelligence workers</b>:
+ <ul>
+ <li><b>Travel data analyst</b> &mdash; "Travel Intelligence Specialist": booking patterns, preferences, market trends; goals: actionable insights, trends, customer matching.</li>
+ <li><b>Travel experience worker (Reflector)</b> &mdash; "Travel Experience Optimization Expert": QA and continuous improvement; goals: analyse feedback, identify improvement areas, enhance service quality.</li>
+ <li><b>Travel opportunity worker (Searcher)</b> &mdash; "Travel Discovery Specialist": explorer/innovator; goals: unique opportunities, emerging destinations, expanded offerings.</li>
+ </ul></li>
+<li><b>Delegator agent</b> &mdash; "Travel Operations Orchestrator": task prioritisation &amp; resource allocation; knows worker capabilities and workload; goals: optimise task distribution, workflow efficiency, quality standards.</li>
+</ul>
+<figure><img src="../assets/u3_fig6-3.png"><figcaption>Figure 6.3 &mdash; Role-based agents within the CWD model for the travel planner</figcaption></figure>
+<h4>Orchestration flow</h4>
+<ol>
+<li><b>Initial request &amp; planning</b>: customer submits requirements; coordinator analyses &amp; develops a strategic plan.</li>
+<li><b>Task distribution</b>: coordinator &rarr; delegator; delegator breaks the plan into tasks for core and analysis workers.</li>
+<li><b>Parallel processing (core tasks)</b>: flight worker searches/reserves flights; hotel worker books accommodation; activity worker creates itinerary; transportation worker arranges ground transport.</li>
+<li><b>Parallel processing (analysis &amp; intelligence)</b>: data analyst processes customer data/patterns; experience reflector reviews similar past itineraries; opportunity searcher finds unique options.</li>
+<li><b>Integration &amp; refinement</b>: workers submit to delegator &rarr; consolidates &rarr; coordinator receives the consolidated plan.</li>
+<li><b>Final review &amp; delivery</b>: coordinator reviews/optimises and presents to the customer.</li>
+</ol>
+
+<h2>10. Communication and Collaboration between Agents</h2>
+<table>
+<tr><th>Aspect</th><th>Description &amp; travel example</th></tr>
+<tr><td><b>Communication</b></td><td>Well-defined <b>protocols</b> (message formats and interaction patterns), e.g., standardised <b>FIPA Agent Communication Language (ACL)</b> &mdash; message states content (requested travel dates), sender (hotel booking worker), recipient (flight booking worker).</td></tr>
+<tr><td><b>Coordination mechanism</b></td><td>Coordinators align worker activities with objectives; control dependencies; ensure timeframes: <b>task prioritisation, resource allocation, progress monitoring</b>. E.g., if the customer prioritises accommodation, coordinator instructs delegator to give the hotel worker higher priority; reallocates resources as needed.</td></tr>
+<tr><td><b>Negotiation &amp; conflict resolution</b></td><td>When goals/actions conflict, use negotiation strategies &mdash; compromise or mediation by predefined criteria/coordinator. E.g., activity worker schedules a full-day tour but transportation worker books a rental car for the whole day: <b>delegator mediates</b> (reschedule tour/modify car); if unresolved, <b>coordinator decides</b> using predefined criteria or customer preference.</td></tr>
+<tr><td><b>Knowledge sharing</b></td><td>Agents share insights for continuous learning/adaptation. E.g., data analyst spots a rising eco-friendly travel trend &rarr; shares with activity &amp; transportation workers; searcher finds a new eco-resort &rarr; shares with hotel &amp; activity workers.</td></tr>
+</table>
+<p>The role-based approach sets clear boundaries for communication channels and responsibilities; protocols for communication, coordination and knowledge sharing harness collective intelligence.</p>
+
+<h2>11. Implementing CWD in Generative-AI Systems (introduction)</h2>
+<ul>
+<li>In <b>traditional MAS</b> behaviours/interactions are explicit code; in <b>LLM-based systems</b> they are controlled by <b>carefully crafted prompts and interaction patterns</b> &mdash; must preserve clear role boundaries and hierarchy.</li>
+<li>Three key implementation considerations: <b>system prompts, instruction formatting, interaction patterns</b>.</li>
+<li><b>System prompts</b> = fundamental configuration layer: define persistent traits, boundaries and behavioural frameworks over the agent's life cycle (unlike task-specific prompts). Each agent's prompt must include: <b>role definition &amp; scope of responsibilities</b>; <b>constraints &amp; operational boundaries</b>; (continued in Unit 4) communication protocols and decision-making frameworks.</li>
+<li>Later chapter topics previewed: state-space management, environment modelling, memory systems, handling LLM contexts.</li>
+</ul>
+
+<h2>12. Unit Summary</h2>
+<ul class="sum">
+<li>Practical planners for LLM agents: <b>LLM-based</b> and <b>HTN</b>; FF moderately; STRIPS/A*/GraphPlan/MCTS impractical.</li>
+<li>Tools + planning together ground plans in facts (without tools the plan is invented).</li>
+<li>Frameworks: <b>CrewAI</b> (role/goal/backstory, sequential or hierarchical, manager), <b>AutoGen</b> (round-robin group chat, termination keyword), <b>LangGraph</b> (state graph with agent &amp; tool nodes, checkpointing).</li>
+<li><b>CWD</b> = Coordinator (strategy) &rarr; Delegator (resource mgmt/dispatch) &rarr; Workers (execution); principles: separation of concerns, hierarchy, bidirectional flow, adaptability/resilience.</li>
+<li>Role design: role + goal + backstory form the system prompt; Manager=Coordinator, Task Interpreter=Delegator, Analyst/Reflector/Searcher=Workers.</li>
+<li>Collaboration needs: communication protocols (FIPA ACL), coordination, negotiation/conflict resolution, knowledge sharing.</li>
+</ul>
+<div class="exam"><span class="t">Likely exam questions</span>
+1) Explain LLM-based planning and HTN with a travel example. 2) Compare CrewAI, AutoGen and LangGraph. 3) Explain the CWD model, its roles and principles with a diagram. 4) Describe the travel planner's role-based agents and orchestration flow. 5) How do agents communicate, coordinate, negotiate and share knowledge?</div>
+<div class="foot">Sources: Unit-3 Part-1 (Enabling Tool Use and Planning in Agents, Ch.5 cont.) &amp; Unit-3 Part-2 (Coordinator, Worker, and Delegator Approach, Ch.6) &mdash; summarised for RVCE study use.</div>
+</body></html>
