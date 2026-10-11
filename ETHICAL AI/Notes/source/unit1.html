@@ -16,15 +16,14 @@
 <li>Relationship between ethics and law</li>
 <li>Machine ethics &amp; examples</li>
 <li>Moral diversity and testing</li>
-<li>Trust &mdash; the foundation of core principles</li>
-<li>The five AI4People principles</li>
+<li>Why responsible AI &amp; the core principles</li>
 <li>Bias and fairness</li>
 <li>Transparency and explainability</li>
 <li>Privacy and security</li>
 <li>Robustness and reliability</li>
 <li>Quick revision &amp; likely questions</li>
 </ol>
-<span style="font-size:8.6pt;color:#475569">Source: Bartneck, L&uuml;tge, Wagner, Welsh &mdash; <i>An Introduction to Ethics in Robotics and AI</i> (Springer, 2021), Ch. 2&ndash;4. Items tagged <span class="plus">+</span> are short additions beyond the textbook for syllabus topics the book treats lightly.</span>
+<span style="font-size:8.6pt;color:#475569">Sources: <b>Ethical AI</b> (Bartneck, L&uuml;tge, Wagner, Welsh, Springer 2021) &mdash; Ch. 2 <i>What Is AI?</i> and Ch. 3 <i>What Is Ethics?</i>; <b>Introduction to Responsible AI</b> (Manure, Bengani, Saravanan, Apress 2023) &mdash; Ch. 1 <i>Introduction</i> (core ethical principles).</span>
 </div>
 
 <h2>1. What is AI?</h2>
@@ -141,88 +140,82 @@
 
 <h2>6. Moral Diversity and Testing</h2>
 <ul>
-<li><b>Core problem:</b> <b>no agreement on the correct moral theory</b> &mdash; polling (Bourget &amp; Chalmers 2014): roughly &frac14; of philosophers favour deontology, &frac14; consequentialism, &#8531; virtue ethics. Which one do we implement?</li>
+<li><b>Core problem:</b> <b>no agreement on the correct moral theory</b> &mdash; how do we implement moral competence in AIs and robots if we have no moral theory to inform the design? </li>
 <li><b>Approach &mdash; test cases:</b> design many ethical test cases; moral competence = ability to pass them. Iterating on new cases may expand competence and give insight into theory.</li>
 <li><b>Testing &amp; certifying fairness (active research):</b> IEEE standards project on <b>algorithmic bias</b> (2017); <b>AI Fairness 360</b>, <b>audit-AI</b>; services like O'Neil Risk Consulting &amp; Algorithmic Auditing; Facebook's <b>Fairness Flow</b>.</li>
 <li>Also: codes of ethics for robotics engineers and HRI professionals. Some researchers remain <b>pessimistic</b> about machine morality.</li>
 </ul>
 
-<h2>7. Trust &mdash; the Foundation of the Core Principles</h2>
-<div class="def"><span class="t">Trust (Lee &amp; See 2004)</span>The attitude that an agent will help achieve one's goals <b>in a situation characterised by uncertainty and vulnerability</b>.</div>
-<ul>
-<li>Trust drives <b>user acceptance</b>: untrusted products fail. <b>Culture</b> matters &mdash; e.g. after the US-EU <i>Safe Harbor</i> was struck down (2015), cloud firms opened EU data centres to regain trust.</li>
-<li><b>Functional elements:</b> reliability, dependability, false-alarm rate, transparency, task complexity &mdash; <b>performance &amp; reliability dominate</b>. Risk of injury/loss of life makes people reconsider trust.</li>
-<li><b>Ethical elements:</b> the five AI4People principles below. With AI it is unclear whether the machine decides or follows a script, so human experience of trust may mislead.</li>
-</ul>
-
-<h2>8. The Five AI4People Principles (Floridi et al. 2018)</h2>
-<div class="diagram">
-<svg viewBox="0 0 700 92" width="700" xmlns="http://www.w3.org/2000/svg">
-  <g font-size="12.5" font-weight="700" fill="#fff" text-anchor="middle">
-    <rect x="2" y="8" width="132" height="44" rx="8" fill="#dc2626"/><text x="68" y="35">Non-maleficence</text>
-    <rect x="142" y="8" width="132" height="44" rx="8" fill="#16a34a"/><text x="208" y="35">Beneficence</text>
-    <rect x="282" y="8" width="132" height="44" rx="8" fill="#2563eb"/><text x="348" y="35">Autonomy</text>
-    <rect x="422" y="8" width="132" height="44" rx="8" fill="#7c3aed"/><text x="488" y="35">Justice</text>
-    <rect x="562" y="8" width="132" height="44" rx="8" fill="#0f766e"/><text x="628" y="35">Explicability</text>
-  </g>
-  <g font-size="11" fill="#1b1f2a" text-anchor="middle">
-    <text x="68" y="70">do no harm</text><text x="208" y="70">do good</text><text x="348" y="70">respect wishes</text><text x="488" y="70">be fair, unbiased</text><text x="628" y="70">be explainable</text>
-  </g>
-</svg></div>
-
+<h2>7. Why Responsible AI &amp; the Core Ethical Principles</h2>
+<p><i>(Manure et al., Ch. 1)</i> AI promises large gains (autonomous vehicles, precision agriculture, personalised learning, NLP, diagnostics) but its power to <b>make decisions, learn and act autonomously</b> creates an ethical dilemma. <b>Responsible AI</b> is the guiding framework for AI's <b>development, deployment and governance</b>: aligning innovation with societal values through ethical principles, accountability and transparency across the AI lifecycle.</p>
 <table>
-<tr><th style="width:15%">Principle</th><th>Meaning &amp; examples</th></tr>
-<tr><td><b>Non-maleficence</b></td><td>AI shall <b>not harm</b> people, animals or property. Online <b>bullying</b> (Sweden's 1993 law) and <b>hate speech</b> (Germany 2017: fines up to &euro;50 M if illegal content isn't removed within a week &mdash; but risks over-removal vs free speech).</td></tr>
-<tr><td><b>Beneficence</b></td><td>AI shall <b>do good</b>; benefits must outweigh harms (from bioethics): fewer AV accidents, elder-care robots, telemedicine, smart grids, protecting biodiversity, personalised education.</td></tr>
-<tr><td><b>Autonomy</b></td><td>AI shall <b>respect people's goals and wishes</b>. Allow informed risk-taking (Everest sherpas, rock climbing) but not harm to others (child tells a robot "pull my sister's hair"); be wary of euthanasia robots. <b>Kant's three formulations:</b> universal law &bull; humanity as an <b>end, never merely a means</b> &bull; kingdom of ends. Asimov's Three Laws alone don't make a Kantian ethical agent.</td></tr>
-<tr><td><b>Justice</b></td><td>AI shall act <b>justly and without bias</b> &rarr; Section 9.</td></tr>
-<tr><td><b>Explicability</b></td><td>It must be possible to <b>explain why</b> an AI reached a result &rarr; Section 10.</td></tr>
+<tr><th style="width:24%">Why it matters</th><th>Explanation</th></tr>
+<tr><td><b>Mitigating bias &amp; discrimination</b></td><td>Models trained on biased data reproduce prejudice; responsible AI demands rigorous data preprocessing, algorithmic transparency and a pursuit of fairness.</td></tr>
+<tr><td><b>Privacy vs innovation</b></td><td>AI's appetite for data threatens individual privacy; needs strong encryption, secure storage and access control so people keep agency over their data.</td></tr>
+<tr><td><b>Human-centric design</b></td><td>AI should <b>augment</b> humans, not replace them; keep <b>human oversight</b> and develop <b>explainable AI</b> so decisions are comprehensible and traceable.</td></tr>
+<tr><td><b>Governance</b></td><td>Robust frameworks, codes of conduct and regulation across legal, social and cultural boundaries; averts harm and ensures AI serves the collective good.</td></tr>
 </table>
 
-<h2>9. Bias and Fairness (Principle of Justice)</h2>
-<div style="display:flex;gap:14px;align-items:flex-start">
-<figure style="flex:0 0 34%;margin:4px 0"><img src="../UNIT-1/images/fig4.1_justitia.png" style="max-height:62mm"><figcaption>Figure 4.1 &mdash; Justitia: blindfold = impartiality, scales = weighing evidence, sword = punishment</figcaption></figure>
-<div style="flex:1">
-<ul>
-<li>Defining "justice" for a machine is hard because <b>moral theory is contested</b>; but in a <b>narrow scope with clear laws</b>, AI can make specific moral decisions.</li>
-<li><b>Credit scoring:</b> neighbourhood data &rarr; systematic bias against residential areas.</li>
-<li><b>Healthcare algorithm (Obermeyer 2019):</b> race excluded, yet <b>cost</b> used as proxy for <b>need</b> &rarr; poorer patients under-served; root cause = <b>problem formulation</b>.</li>
-<li><b>COMPAS</b> (courts): ProPublica (2016) found bias against African-American defendants; developers cited differing <b>base rates</b>. Chouldechova (2017): predictive parity and equal error rates <b>cannot both hold</b> when base rates differ &rarr; <b>fairness definitions conflict</b>, and there is a <b>fairness &ndash; accuracy trade-off</b>. Accuracy only &asymp;65%.</li>
-</ul></div></div>
-<div class="exam"><span class="t">Detail in Unit 2</span>Types of bias, detection metrics and mitigation techniques are covered in the Unit 2 notes.</div>
+<figure><img src="../UNIT-1/images/fig1-1_core_principles.png" style="max-height:62mm"><figcaption>Figure 1-1 &mdash; The four core principles of Responsible AI (Manure et al.)</figcaption></figure>
+<div class="flow">Bias &amp; Fairness &bull; Transparency &amp; Explainability &bull; Privacy &amp; Security &bull; Robustness &amp; Reliability</div>
 
-<h2>10. Transparency and Explainability (Principle of Explicability)</h2>
+<h2>8. Bias and Fairness</h2>
+<div class="def"><span class="t">Bias &amp; fairness</span><b>Bias</b> seeps into AI through the data used to train it &mdash; algorithms learn patterns from vast datasets that already contain biases of human decisions and social structures &rarr; discriminatory outcomes, stereotypes, widened disparities. <b>Fairness</b> = treating all individuals equitably regardless of background, demographics or characteristics.</div>
 <ul>
-<li><b>Explicability = intelligibility + accountability</b> (Floridi). It is <b>not identical to transparency</b>: publishing millions of lines of code won't help non-experts and may harm competitiveness.</li>
-<li><b>Intelligibility:</b> no inscrutable <b>black box</b> &mdash; someone can explain the workings to judges, juries and users.</li>
-<li><b>Legal:</b> EU <b>GDPR "right to information/explanation"</b> for algorithmic decisions &mdash; hard for neural networks &rarr; research in <b>Explainable AI (XAI)</b>.</li>
-<li><b>Justification</b> is part of moral functioning. <i>Loomis v. Wisconsin</i>: defendant challenged the proprietary COMPAS score; appeal failed as judges did not rely on the score alone.</li>
-<li><b>Accountability:</b> <b>log files</b> (like an aircraft flight recorder, "black box") let investigators retrace steps and assign blame.</li>
+<li>Eliminating <i>all</i> bias may be infeasible &mdash; the focus is on <b>mitigating</b> glaring biases that lead to unjust or harmful outcomes.</li>
+<li><b>Fairness is an ethical imperative</b> (a "north star"): goes beyond statistical definitions to moral and societal obligations, redressing historical and systemic inequalities.</li>
+<li><b>Algorithmic fairness:</b> decisions must not depend on <b>sensitive attributes</b> (race, gender, socioeconomic status); fairness <b>metrics, algorithms and techniques</b> exist to assess and rectify bias.</li>
+<li><b>Challenge &mdash; quantifying fairness:</b> no universally accepted definition; competing notions (equal treatment vs redressing historical disparities); trade-offs between fairness types and with accuracy.</li>
+<li><b>Mitigation path:</b> awareness &amp; education; data preprocessing (<b>re-sampling, re-weighting</b>); <b>adversarial debiasing</b>; diversity in data collection, model development and evaluation.</li>
+<li><b>Societal impact:</b> biased AI perpetuates inequality <i>and</i> erodes trust in technology &mdash; organisations should adopt AI-ethics frameworks across the development lifecycle.</li>
 </ul>
+<div class="exam"><span class="t">Continued in Unit 2</span>Types of bias, real cases, detection &amp; mitigation techniques and a Python implementation.</div>
 
-<h2>11. Privacy and Security <span class="plus">+</span></h2>
+<h2>9. Transparency and Explainability</h2>
 <table>
-<tr><th style="width:15%"></th><th>Key ideas</th></tr>
-<tr><td><b>Privacy</b></td><td>Control over personal data. AI is data-hungry; book Ch. 8 covers persistent surveillance, use of data for unintended purposes, auto-insurance discrimination, China's Social Credit System. Principles: <b>consent, purpose limitation, data minimisation</b>, anonymisation, GDPR rights.</td></tr>
-<tr><td><b>Security</b></td><td>Protect data and models from breaches, <b>adversarial attacks</b>, <b>data poisoning</b> and model theft. Failures destroy trust and cause harm (links to non-maleficence).</td></tr>
+<tr><th style="width:20%"></th><th>Meaning</th></tr>
+<tr><td><b>Transparency</b></td><td>Openness and comprehensibility of an AI system's decision-making &mdash; illuminates the <b>"black box"</b> (how inputs become outputs). Fosters <b>accountability</b>, lets people identify and challenge errors or unintended consequences, and builds <b>trust</b>.</td></tr>
+<tr><td><b>Explainability</b></td><td>Bridges the <b>cognitive gap</b> between complex non-linear AI processing and human cognition &mdash; answers <i>"Why did it make this decision?"</i> and <i>"How did it arrive at this conclusion?"</i> by turning outputs into explanations people can follow.</td></tr>
 </table>
-
-<h2>12. Robustness and Reliability <span class="plus">+</span></h2>
 <ul>
-<li><b>Robustness:</b> correct behaviour under changed, noisy or adversarial inputs &mdash; the book stresses AI <b>generalises poorly</b> and lacks common sense.</li>
-<li><b>Reliability:</b> consistent, dependable performance over time; the book names it (with performance) the <b>dominant factor in trust</b>. Failures in safety-critical domains (vehicles, medicine) risk life.</li>
-<li><b>Practices:</b> stress and edge-case testing, drift monitoring, fail-safe fallbacks, <b>human oversight</b>.</li>
+<li><b>Applications:</b> <b>finance</b> (loan decisions), <b>health care</b> (diagnoses, treatment recommendations), <b>criminal justice</b> (stops predictive models perpetuating racial/socioeconomic bias). Also supports <b>auditing</b> and <b>regulatory compliance</b>.</li>
+<li><b>Challenges:</b> (1) trade-off between <b>model complexity</b> and interpretability (deep nets are hard to explain); (2) dynamic models that update/adapt need explanations that stay meaningful through the lifecycle; (3) <b>proprietary</b> concerns &mdash; balancing transparency with intellectual property and the public's right to transparency.</li>
 </ul>
 
-<h2>13. Quick Revision &amp; Likely Questions</h2>
+<h2>10. Privacy and Security</h2>
+<ul>
+<li><b>Privacy</b> is a cornerstone of personal freedom; AI accumulates and analyses huge amounts of data, so personal information must be handled with the highest level of consideration. <b>Informed consent:</b> people have the right to know how their data is used and shared.</li>
+<li><b>Data minimisation:</b> collect, process and retain only the data essential for a specific AI task &mdash; lowers the risk of unintended exposure and breaches.</li>
+<li><b>Data security:</b> protect data from unauthorised access, manipulation or theft &mdash; <b>encryption, access controls, secure storage</b>, with protection built into every stage from collection to disposal.</li>
+<li><b>Challenges:</b> (a) AI needs vast data, so sophisticated <b>anonymisation</b> must keep individuals' privacy intact in aggregated data; (b) global <b>dataflows</b> need harmonised privacy/security regulation and international standards.</li>
+<li><b>Solutions:</b> <b>privacy-preserving AI</b> &mdash; <b>federated learning</b> (learn from decentralised data) and <b>homomorphic encryption</b> (compute on encrypted data).</li>
+<li>Privacy and security are "inseparable twins": strong protection builds trust and prevents misuse of AI for surveillance.</li>
+</ul>
+
+<h2>11. Robustness and Reliability</h2>
+<table>
+<tr><th style="width:20%"></th><th>Meaning</th></tr>
+<tr><td><b>Robustness</b></td><td>Capacity of algorithms to stay <b>effective and accurate amid complexity, uncertainty and adversarial scenarios</b> &mdash; generalise to novel situations, data variations or deliberate attempts to deceive. E.g. a self-driving car must cope with weather, road layouts and unexpected obstacles; a diagnostic model must stay accurate across diverse patients.</td></tr>
+<tr><td><b>Reliability</b></td><td><b>Consistent delivery of accurate outcomes over time</b>, including under continuous operation. A foundation of trust: unreliable finance models cause large losses; unreliable diagnostic AI endangers patients.</td></tr>
+</table>
+<div class="def"><span class="t">Challenges &amp; mitigation strategies</span>
+<ul>
+<li><b>Data quality &amp; diversity</b> &mdash; representative, unbiased sampling and continuous data monitoring.</li>
+<li><b>Adversarial attacks</b> &mdash; robust/<b>adversarial training</b> and constant evaluation against subtly altered inputs.</li>
+<li><b>Transfer learning &amp; generalisation</b> &mdash; adapt to new contexts without extensive retraining.</li>
+<li><b>Model monitoring &amp; feedback loops</b> &mdash; observe real-world performance and improve over time.</li>
+<li><b>Interpretable AI</b> and <b>collaborative ecosystems</b> (researchers, developers, policymakers, domain experts).</li>
+</ul></div>
+
+<h2>12. Quick Revision &amp; Likely Questions</h2>
 <div class="key sum"><span class="t">One-liners</span>
 <ul>
-<li>AI = agents that perceive, learn and act towards goals; today's AI is all <b>weak</b>.</li>
+<li>AI = agents that perceive, learn and act towards goals; today's AI is all <b>weak</b>. Strong AI (Searle) = a machine with a mind; not achieved.</li>
 <li>Ethics: <b>descriptive</b> (is) &bull; <b>normative</b> (ought) &bull; <b>meta</b> (nature) &bull; <b>applied</b> (fields).</li>
 <li>Normative: <b>deontology</b> (duty, Kant) &bull; <b>consequentialism</b> (outcomes, utility) &bull; <b>virtue</b> (character, Aristotle).</li>
 <li>Ethics &ne; law but overlap; ethics acts as <b>soft law</b>.</li>
-<li>Machine ethics hurdles: no feelings, <b>no agreed theory</b>, naive utilities misfire &rarr; <b>test cases</b>.</li>
-<li>Five principles: <b>Non-maleficence, Beneficence, Autonomy, Justice, Explicability</b>.</li>
+<li>Machine ethics hurdles: no feelings, <b>no agreed theory</b>, naive utilities misfire &rarr; use <b>test cases</b> and bias-testing tools.</li>
+<li>Four core principles: <b>Bias &amp; Fairness &bull; Transparency &amp; Explainability &bull; Privacy &amp; Security &bull; Robustness &amp; Reliability</b>.</li>
 </ul></div>
 <div class="exam"><span class="t">Likely questions</span>
 <ol>
@@ -232,8 +225,10 @@
 <li>Discuss the relationship between ethics and law. (5)</li>
 <li>Using the toddler&ndash;letter example, explain difficulties in machine ethics. (6)</li>
 <li>How does moral diversity affect testing of ethical AI? Name bias-testing tools. (5)</li>
-<li>Explain the five AI4People principles; relate justice and explicability to COMPAS. (10)</li>
+<li>Explain the four core principles of responsible AI. (10)</li>
+<li>Distinguish transparency from explainability; list challenges. (6)</li>
+<li>Explain how robustness and reliability can be achieved in AI systems. (6)</li>
 </ol></div>
 
-<div class="foot">Ethical AI &middot; Unit 1 Consolidated Notes &middot; built from Bartneck et al., <i>An Introduction to Ethics in Robotics and AI</i></div>
+<div class="foot">Ethical AI &middot; Unit 1 Consolidated Notes &middot; built from Bartneck et al. (Ch. 2&ndash;3) and Manure et al. (Ch. 1)</div>
 </body></html>
